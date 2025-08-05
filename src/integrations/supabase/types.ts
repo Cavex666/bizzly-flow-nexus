@@ -233,6 +233,7 @@ export type Database = {
         Row: {
           company_name: string | null
           created_at: string
+          currency: string | null
           display_name: string | null
           id: string
           phone: string | null
@@ -242,6 +243,7 @@ export type Database = {
         Insert: {
           company_name?: string | null
           created_at?: string
+          currency?: string | null
           display_name?: string | null
           id?: string
           phone?: string | null
@@ -251,6 +253,7 @@ export type Database = {
         Update: {
           company_name?: string | null
           created_at?: string
+          currency?: string | null
           display_name?: string | null
           id?: string
           phone?: string | null

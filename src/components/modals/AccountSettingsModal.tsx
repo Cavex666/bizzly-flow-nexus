@@ -104,7 +104,7 @@ export const AccountSettingsModal = ({
         profileForm.reset({
           displayName: data.display_name || '',
           phone: data.phone || '',
-          currency: data.currency || 'BYN',
+          currency: (data as any).currency || 'BYN',
         });
       }
     } catch (error) {
@@ -352,89 +352,145 @@ export const AccountSettingsModal = ({
                       )}
                     />
 
-                    <FormField
-                      control={companyForm.control}
-                      name="contactPersonName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>ФИО ответственного лица</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="Иванов Иван Иванович" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <FormField
+                       control={companyForm.control}
+                       name="contactPersonName"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>ФИО ответственного лица</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="Иванов Иван Иванович" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
 
-                    <FormField
-                      control={companyForm.control}
-                      name="contactPersonPosition"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Должность ответственного лица</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="Директор" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <FormField
+                       control={companyForm.control}
+                       name="contactPersonPosition"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Должность ответственного лица</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="Директор" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
 
-                    <FormField
-                      control={companyForm.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Номер телефона</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="+375 (XX) XXX-XX-XX" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <FormField
+                       control={companyForm.control}
+                       name="contactPersonAuthorities"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Полномочия ответственного лица</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="действующий на основании Устава" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
 
-                    <FormField
-                      control={companyForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email организации</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="email" placeholder="info@company.com" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <FormField
+                       control={companyForm.control}
+                       name="contactPersonNameGenitive"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>ФИО ответственного лица (Р.п.)</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="Иванова Ивана Ивановича" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
 
-                    <FormField
-                      control={companyForm.control}
-                      name="address"
-                      render={({ field }) => (
-                        <FormItem className="col-span-2">
-                          <FormLabel>Адрес</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="г. Минск, ул. Примерная, д. 1, оф. 1" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <FormField
+                       control={companyForm.control}
+                       name="contactPersonPositionGenitive"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Должность ответственного лица (Р.п.)</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="директора" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
 
-                    <FormField
-                      control={companyForm.control}
-                      name="taxId"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>УНП</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="123456789" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <FormField
+                       control={companyForm.control}
+                       name="contactPersonAuthoritiesPrepositional"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Полномочия (П.п.)</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="действующего на основании Устава" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
+
+                     <FormField
+                       control={companyForm.control}
+                       name="phone"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Номер телефона</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="+375 (XX) XXX-XX-XX" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
+
+                     <FormField
+                       control={companyForm.control}
+                       name="email"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Email организации</FormLabel>
+                           <FormControl>
+                             <Input {...field} type="email" placeholder="info@company.com" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
+
+                     <FormField
+                       control={companyForm.control}
+                       name="address"
+                       render={({ field }) => (
+                         <FormItem className="col-span-2">
+                           <FormLabel>Адрес</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="г. Минск, ул. Примерная, д. 1, оф. 1" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
+
+                     <FormField
+                       control={companyForm.control}
+                       name="taxId"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>УНП</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="123456789" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
 
                     <FormField
                       control={companyForm.control}
