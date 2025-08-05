@@ -1,11 +1,14 @@
 import { Users, Phone, Mail, MapPin } from 'lucide-react';
+
 interface ClientsListProps {
   onClientSelect: (clientId: string | null) => void;
   selectedClient: string | null;
+  searchQuery?: string;
 }
 export const ClientsList = ({
   onClientSelect,
-  selectedClient
+  selectedClient,
+  searchQuery = ''
 }: ClientsListProps) => {
   // Mock clients data
   const clients = [{
@@ -33,8 +36,14 @@ export const ClientsList = ({
     country: 'Беларусь',
     activeProjects: 0
   }];
+
+  const filteredClients = clients.filter(client =>
+    client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.contactPerson.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return <div className="space-y-3">
-      {clients.map(client => <div key={client.id} className={`floating-card p-4 rounded-2xl cursor-pointer transition-all duration-300 ${selectedClient === client.id ? 'ring-2 ring-primary shadow-glow' : 'hover:shadow-lg'}`} onClick={() => onClientSelect(selectedClient === client.id ? null : client.id)}>
+      {filteredClients.map(client => <div key={client.id} className={`floating-card p-4 rounded-2xl cursor-pointer transition-all duration-300 ${selectedClient === client.id ? 'ring-2 ring-primary shadow-glow' : 'hover:shadow-lg'}`} onClick={() => onClientSelect(selectedClient === client.id ? null : client.id)}>
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 bg-gradient-secondary rounded-xl flex items-center justify-center flex-shrink-0">
               <Users className="w-5 h-5 text-white" />
@@ -70,7 +79,7 @@ export const ClientsList = ({
           </div>
         </div>)}
 
-      {clients.length === 0 && <div className="text-center py-8 text-muted-foreground">
+      {filteredClients.length === 0 && <div className="text-center py-8 text-muted-foreground">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>Нет клиентов</p>
         </div>}

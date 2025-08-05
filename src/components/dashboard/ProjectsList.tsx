@@ -7,13 +7,20 @@ interface ProjectsListProps {
   onProjectSelect: (projectId: string | null) => void;
   selectedProject: string | null;
   onProjectView?: (project: any) => void;
+  searchQuery?: string;
+  filter?: ProjectFilter;
 }
 
 type ProjectFilter = 'active' | 'all' | 'completed';
 
-export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }: ProjectsListProps) => {
-  const [filter, setFilter] = useState<ProjectFilter>('active');
-  const [searchQuery, setSearchQuery] = useState('');
+export const ProjectsList = ({ 
+  onProjectSelect, 
+  selectedProject, 
+  onProjectView,
+  searchQuery = '',
+  filter: externalFilter
+}: ProjectsListProps) => {
+  const [filter, setFilter] = useState<ProjectFilter>(externalFilter || 'active');
 
   // Mock projects data
   const projects = [
@@ -92,17 +99,6 @@ export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }
 
   return (
     <div className="space-y-4 flex flex-col h-full">
-      {/* Search Input */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          placeholder="Поиск по названию проекта или клиенту..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
-      </div>
-
       {/* Filter Tabs */}
       <div className="flex gap-2">
         {[

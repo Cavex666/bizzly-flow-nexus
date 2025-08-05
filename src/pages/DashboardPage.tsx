@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Plus, Calendar, Users, FolderOpen, DollarSign, TrendingUp, Settings } from 'lucide-react';
+import { Plus, Calendar, Users, FolderOpen, DollarSign, TrendingUp, Settings, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { QuickStats } from '../components/dashboard/QuickStats';
 import { QuarterlyCalendar } from '../components/dashboard/QuarterlyCalendar';
@@ -18,6 +19,8 @@ export const DashboardPage = () => {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [viewingProject, setViewingProject] = useState<any>(null);
+  const [clientSearchQuery, setClientSearchQuery] = useState('');
+  const [projectSearchQuery, setProjectSearchQuery] = useState('');
 
   return (
     <div className="space-y-6">
@@ -73,10 +76,23 @@ export const DashboardPage = () => {
               <Users className="w-5 h-5 text-primary" />
               Клиенты
             </h2>
+            
+            {/* Search Input */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Поиск по названию компании или контактному лицу..."
+                value={clientSearchQuery}
+                onChange={(e) => setClientSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
             <div className="flex-1">
               <ClientsList
                 onClientSelect={setSelectedClient}
                 selectedClient={selectedClient}
+                searchQuery={clientSearchQuery}
               />
             </div>
           </div>
@@ -114,6 +130,18 @@ export const DashboardPage = () => {
               <FolderOpen className="w-5 h-5 text-primary" />
               Все проекты
             </h2>
+            
+            {/* Search Input */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Поиск по названию проекта или клиенту..."
+                value={projectSearchQuery}
+                onChange={(e) => setProjectSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
             <div className="flex-1">
               <ProjectsList
                 onProjectSelect={setSelectedProject}
@@ -122,6 +150,7 @@ export const DashboardPage = () => {
                   setViewingProject(project);
                   setShowProjectView(true);
                 }}
+                searchQuery={projectSearchQuery}
               />
             </div>
           </div>
