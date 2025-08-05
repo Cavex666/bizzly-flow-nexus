@@ -64,14 +64,22 @@ export const useProjects = () => {
         },
         (payload) => {
           console.log('Project change detected:', payload);
+          console.log('Event type:', payload.eventType);
+          
           // Immediately update local state for faster response
-          if (payload.eventType === 'INSERT') {
+          const eventType = payload.eventType;
+          
+          if (eventType === 'INSERT') {
+            console.log('Inserting project:', payload.new);
             setProjects(prev => [payload.new as Project, ...prev]);
-          } else if (payload.eventType === 'UPDATE') {
-            setProjects(prev => prev.map(p => p.id === payload.new.id ? payload.new as Project : p));
-          } else if (payload.eventType === 'DELETE') {
-            setProjects(prev => prev.filter(p => p.id !== payload.old.id));
+          } else if (eventType === 'UPDATE') {
+            console.log('Updating project:', payload.new);
+            setProjects(prev => prev.map(p => p.id === (payload.new as Project).id ? payload.new as Project : p));
+          } else if (eventType === 'DELETE') {
+            console.log('Deleting project:', payload.old);
+            setProjects(prev => prev.filter(p => p.id !== (payload.old as Project).id));
           } else {
+            console.log('Unknown event type, doing full reload:', eventType);
             // Fallback to full reload for other cases
             loadProjects();
           }

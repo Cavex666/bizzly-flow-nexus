@@ -59,14 +59,22 @@ export const useClients = () => {
         },
         (payload) => {
           console.log('Client change detected:', payload);
+          console.log('Event type:', payload.eventType);
+          
           // Immediately update local state for faster response
-          if (payload.eventType === 'INSERT') {
+          const eventType = payload.eventType;
+          
+          if (eventType === 'INSERT') {
+            console.log('Inserting client:', payload.new);
             setClients(prev => [payload.new as Client, ...prev]);
-          } else if (payload.eventType === 'UPDATE') {
-            setClients(prev => prev.map(c => c.id === payload.new.id ? payload.new as Client : c));
-          } else if (payload.eventType === 'DELETE') {
-            setClients(prev => prev.filter(c => c.id !== payload.old.id));
+          } else if (eventType === 'UPDATE') {
+            console.log('Updating client:', payload.new);
+            setClients(prev => prev.map(c => c.id === (payload.new as Client).id ? payload.new as Client : c));
+          } else if (eventType === 'DELETE') {
+            console.log('Deleting client:', payload.old);
+            setClients(prev => prev.filter(c => c.id !== (payload.old as Client).id));
           } else {
+            console.log('Unknown event type, doing full reload:', eventType);
             // Fallback to full reload for other cases
             loadClients();
           }
