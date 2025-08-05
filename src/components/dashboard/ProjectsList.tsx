@@ -119,7 +119,7 @@ export const ProjectsList = ({
       </div>
 
       {/* Projects Grid */}
-      <div className="grid gap-4 flex-1 overflow-auto">
+      <div className="grid gap-4 flex-1 overflow-auto p-1">
         {filteredProjects.map((project) => (
           <div
             key={project.id}
