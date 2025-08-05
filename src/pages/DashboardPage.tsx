@@ -142,7 +142,7 @@ export const DashboardPage = () => {
               />
             </div>
             
-            <div className="flex-1">
+            <div className="flex-1 p-2">
               <ProjectsList
                 onProjectSelect={setSelectedProject}
                 selectedProject={selectedProject}
