@@ -51,7 +51,7 @@ export const ClientsList = ({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
       {filteredClients.map(client => {
         const activeProjectsCount = getActiveProjectsCount(client.id);
         return (

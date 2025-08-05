@@ -274,7 +274,9 @@ export const AccountSettingsModal = ({
         </div>
 
         <div className="p-6">
-          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value)}>
+          <Tabs value={activeTab} onValueChange={(value) => {
+            if (value) setActiveTab(value);
+          }}>
             <TabsList className="grid grid-cols-2 w-full">
               <TabsTrigger value="account">Профиль</TabsTrigger>
               <TabsTrigger value="company">Организация</TabsTrigger>

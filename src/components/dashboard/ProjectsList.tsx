@@ -25,7 +25,7 @@ export const ProjectsList = ({
   filter: externalFilter,
   selectedClientId
 }: ProjectsListProps) => {
-  const [filter, setFilter] = useState<ProjectFilter>(externalFilter || 'active');
+  const [filter, setFilter] = useState<ProjectFilter>(externalFilter || 'all');
   const { projects, loading: projectsLoading } = useProjects();
   const { clients } = useClients();
 
@@ -91,7 +91,7 @@ export const ProjectsList = ({
             <Skeleton key={index} className="h-8 w-20 rounded-md" />
           ))}
         </div>
-        <div className="grid gap-4 flex-1 overflow-auto p-1">
+        <div className="grid gap-4 flex-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
           {Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className="floating-card p-4 rounded-2xl">
               <div className="flex items-start gap-3">
@@ -136,7 +136,7 @@ export const ProjectsList = ({
       </div>
 
       {/* Projects Grid */}
-      <div className="grid gap-4 flex-1 overflow-auto p-1">
+      <div className="grid gap-4 flex-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
         {filteredProjects.map((project) => {
           const clientName = getClientName(project.client_id);
           return (
