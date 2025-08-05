@@ -1,18 +1,24 @@
-import { Users, Phone, Mail, MapPin } from 'lucide-react';
+import { Users, Phone, Mail, MapPin, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { useClients } from '@/hooks/useClients';
 import { useProjects } from '@/hooks/useProjects';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface ClientsListProps {
   onClientSelect: (clientId: string | null) => void;
   selectedClient: string | null;
   searchQuery?: string;
+  onClientEdit?: (client: any) => void;
+  onClientDelete?: (client: any) => void;
 }
 
 export const ClientsList = ({
   onClientSelect,
   selectedClient,
-  searchQuery = ''
+  searchQuery = '',
+  onClientEdit,
+  onClientDelete
 }: ClientsListProps) => {
   const { clients, loading: clientsLoading } = useClients();
   const { projects } = useProjects();
@@ -30,9 +36,9 @@ export const ClientsList = ({
     return (
       <div className="space-y-3">
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="floating-card p-4 rounded-2xl">
+          <div key={index} className="bg-card border border-border rounded-lg p-3">
             <div className="flex items-start gap-3">
-              <Skeleton className="w-10 h-10 rounded-xl" />
+              <Skeleton className="w-8 h-8 rounded-lg" />
               <div className="flex-1 space-y-2">
                 <Skeleton className="h-4 w-32" />
                 <Skeleton className="h-3 w-24" />
@@ -57,23 +63,62 @@ export const ClientsList = ({
         return (
           <div 
             key={client.id} 
-            className={`floating-card p-4 rounded-2xl cursor-pointer transition-all duration-300 ${
+            className={`bg-card border border-border rounded-lg p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 ${
               selectedClient === client.id 
-                ? 'ring-2 ring-primary shadow-glow' 
-                : 'hover:shadow-lg'
+                ? 'border-primary bg-primary/5' 
+                : ''
             }`} 
             onClick={() => onClientSelect(selectedClient === client.id ? null : client.id)}
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-gradient-secondary rounded-xl flex items-center justify-center flex-shrink-0">
-                <Users className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-secondary rounded-lg flex items-center justify-center flex-shrink-0">
+                <Users className="w-4 h-4 text-white" />
               </div>
               
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-sm mb-1 truncate">{client.company_name}</h4>
-                <p className="text-xs text-muted-foreground mb-2">{client.contact_person}</p>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-sm mb-1 truncate">{client.company_name}</h4>
+                    <p className="text-xs text-muted-foreground">{client.contact_person}</p>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreVertical className="w-3 h-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-32">
+                      {onClientEdit && (
+                        <DropdownMenuItem onClick={(e) => {
+                          e.stopPropagation();
+                          onClientEdit(client);
+                        }}>
+                          <Edit className="w-4 h-4 mr-2" />
+                          Редактировать
+                        </DropdownMenuItem>
+                      )}
+                      {onClientDelete && (
+                        <DropdownMenuItem 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onClientDelete(client);
+                          }}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Удалить
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
                 
-                <div className="space-y-1">
+                <div className="space-y-1 mb-2">
                   {client.phone && (
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Phone className="w-3 h-3" />
@@ -96,8 +141,8 @@ export const ClientsList = ({
                   )}
                 </div>
                 
-                <div className="mt-2 pt-2 border-t border-border">
-                  <span className={`text-xs px-2 py-1 rounded-full ${
+                <div>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${
                     activeProjectsCount > 0 
                       ? 'bg-success/10 text-success' 
                       : 'bg-muted text-muted-foreground'

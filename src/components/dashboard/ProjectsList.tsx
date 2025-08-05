@@ -3,6 +3,7 @@ import { Eye, Calendar, DollarSign, User, MoreVertical, FolderOpen, Search, Edit
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Progress } from '@/components/ui/progress';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useProjects } from '@/hooks/useProjects';
 import { useClients } from '@/hooks/useClients';
@@ -88,6 +89,27 @@ export const ProjectsList = ({
     }
   };
 
+  const calculateDateProgress = (startDate: string, endDate: string) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const now = new Date();
+    
+    if (now < start) return 0;
+    if (now > end) return 100;
+    
+    const totalTime = end.getTime() - start.getTime();
+    const elapsedTime = now.getTime() - start.getTime();
+    
+    return Math.round((elapsedTime / totalTime) * 100);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit'
+    });
+  };
+
   if (projectsLoading) {
     return (
       <div className="space-y-4 flex flex-col h-full">
@@ -96,19 +118,15 @@ export const ProjectsList = ({
             <Skeleton key={index} className="h-8 w-20 rounded-md" />
           ))}
         </div>
-        <div className="grid gap-4 flex-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
+        <div className="grid gap-3 flex-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="floating-card p-4 rounded-2xl">
+            <div key={index} className="bg-card border border-border rounded-lg p-3">
               <div className="flex items-start gap-3">
-                <Skeleton className="w-10 h-10 rounded-xl" />
+                <Skeleton className="w-8 h-8 rounded-lg" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-32" />
                   <Skeleton className="h-3 w-24" />
-                  <div className="space-y-1">
-                    <Skeleton className="h-3 w-28" />
-                    <Skeleton className="h-3 w-36" />
-                    <Skeleton className="h-3 w-20" />
-                  </div>
+                  <Skeleton className="h-2 w-full" />
                   <Skeleton className="h-6 w-16 rounded-full" />
                 </div>
               </div>
@@ -141,22 +159,23 @@ export const ProjectsList = ({
       </div>
 
       {/* Projects Grid */}
-      <div className="grid gap-4 flex-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
+      <div className="grid gap-3 flex-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
         {filteredProjects.map((project) => {
           const clientName = getClientName(project.client_id);
+          const dateProgress = calculateDateProgress(project.start_date, project.end_date);
           return (
             <div
               key={project.id}
-              className={`floating-card p-4 rounded-2xl cursor-pointer transition-all duration-300 ${
+              className={`bg-card border border-border rounded-lg p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 ${
                 selectedProject === project.id 
-                  ? 'ring-2 ring-primary shadow-glow' 
+                  ? 'border-primary bg-primary/5' 
                   : ''
               }`}
               onClick={() => onProjectSelect(selectedProject === project.id ? null : project.id)}
             >
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center flex-shrink-0">
-                  <FolderOpen className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                  <FolderOpen className="w-4 h-4 text-white" />
                 </div>
                 
                 <div className="flex-1 min-w-0">
@@ -168,78 +187,76 @@ export const ProjectsList = ({
                         <span className="truncate">{clientName}</span>
                       </p>
                     </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                    <div className="flex items-center gap-1">
+                      {onProjectView && (
                         <Button
                           variant="ghost"
                           size="sm"
                           className="h-6 w-6 p-0"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <MoreVertical className="w-3 h-3" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-32">
-                        {onProjectView && (
-                          <DropdownMenuItem onClick={(e) => {
+                          onClick={(e) => {
                             e.stopPropagation();
                             onProjectView(project);
-                          }}>
-                            <Eye className="w-4 h-4 mr-2" />
-                            Просмотр
-                          </DropdownMenuItem>
-                        )}
-                        {onProjectEdit && (
-                          <DropdownMenuItem onClick={(e) => {
-                            e.stopPropagation();
-                            onProjectEdit(project);
-                          }}>
-                            <Edit className="w-4 h-4 mr-2" />
-                            Редактировать
-                          </DropdownMenuItem>
-                        )}
-                        {onProjectDelete && (
-                          <DropdownMenuItem 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onProjectDelete(project);
-                            }}
-                            className="text-destructive focus:text-destructive"
+                          }}
+                        >
+                          <Eye className="w-3 h-3" />
+                        </Button>
+                      )}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0"
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Удалить
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                            <MoreVertical className="w-3 h-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-32">
+                          {onProjectEdit && (
+                            <DropdownMenuItem onClick={(e) => {
+                              e.stopPropagation();
+                              onProjectEdit(project);
+                            }}>
+                              <Edit className="w-4 h-4 mr-2" />
+                              Редактировать
+                            </DropdownMenuItem>
+                          )}
+                          {onProjectDelete && (
+                            <DropdownMenuItem 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onProjectDelete(project);
+                              }}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Удалить
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
 
-                  {/* Project Details */}
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <DollarSign className="w-3 h-3" />
-                      <span className="font-medium">
-                        {project.budget?.toLocaleString()} {project.currency}
+                  {/* Progress Bar and Status */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(project.status)}`}>
+                        {getStatusText(project.status)}
                       </span>
+                      <div className="text-xs text-muted-foreground">
+                        {formatDate(project.start_date)} - {formatDate(project.end_date)}
+                      </div>
                     </div>
                     
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Calendar className="w-3 h-3" />
-                      <span>
-                        {project.work_days_type === 'working' ? 'Рабочие дни' : 'Календарные дни'}
-                      </span>
+                    <div className="space-y-1">
+                      <Progress value={dateProgress} className="h-2" />
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>Прогресс: {dateProgress}%</span>
+                        <span>{project.budget?.toLocaleString()} {project.currency}</span>
+                      </div>
                     </div>
-                    
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <span>Прогресс: {project.progress || 0}%</span>
-                    </div>
-                  </div>
-
-                  {/* Status Badge */}
-                  <div className="mt-2">
-                    <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(project.status)}`}>
-                      {getStatusText(project.status)}
-                    </span>
                   </div>
                 </div>
               </div>
