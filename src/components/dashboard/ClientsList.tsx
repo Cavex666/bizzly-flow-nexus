@@ -61,7 +61,7 @@ export const ClientsList = ({ onClientSelect, selectedClient }: ClientsListProps
       </div>
 
       {/* Clients List with Scroll */}
-      <ScrollArea className="h-80">
+      <ScrollArea className="flex-1">
         <div className="space-y-3 pr-4">
           {filteredClients.map((client) => (
             <div

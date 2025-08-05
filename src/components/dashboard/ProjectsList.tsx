@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Eye, Calendar, DollarSign, User, MoreVertical, FolderOpen } from 'lucide-react';
+import { Eye, Calendar, DollarSign, User, MoreVertical, FolderOpen, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface ProjectsListProps {
   onProjectSelect: (projectId: string | null) => void;
@@ -12,6 +13,7 @@ type ProjectFilter = 'active' | 'all' | 'completed';
 
 export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }: ProjectsListProps) => {
   const [filter, setFilter] = useState<ProjectFilter>('active');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Mock projects data
   const projects = [
@@ -51,6 +53,11 @@ export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }
   ];
 
   const filteredProjects = projects.filter(project => {
+    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         project.client.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (!matchesSearch) return false;
+    
     switch (filter) {
       case 'active':
         return project.status === 'active';
@@ -84,7 +91,18 @@ export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 flex flex-col h-full">
+      {/* Search Input */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Поиск по названию проекта или клиенту..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
       {/* Filter Tabs */}
       <div className="flex gap-2">
         {[
@@ -105,7 +123,7 @@ export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }
       </div>
 
       {/* Projects Grid */}
-      <div className="grid gap-4">
+      <div className="grid gap-4 flex-1 overflow-auto">
         {filteredProjects.map((project) => (
           <div
             key={project.id}

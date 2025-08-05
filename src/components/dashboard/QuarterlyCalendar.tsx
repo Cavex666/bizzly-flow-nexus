@@ -92,7 +92,7 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
         <div
           key={day}
           className={`
-            aspect-square flex items-center justify-center text-xs sm:text-sm cursor-pointer transition-all duration-200
+            aspect-square flex items-center justify-center text-xs cursor-pointer transition-all duration-200 w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10
             ${isTodayDay 
               ? 'bg-primary text-primary-foreground font-bold shadow-md rounded-full scale-110' 
               : isProjectWorkDay 
@@ -113,7 +113,7 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
         <h4 className="text-lg font-semibold mb-3 text-center">{monthName}</h4>
         <div className="grid grid-cols-7 gap-1 mb-2">
           {weekDays.map(day => (
-            <div key={day} className="p-2 text-center text-xs font-medium text-muted-foreground">
+            <div key={day} className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-xs font-medium text-muted-foreground">
               {day}
             </div>
           ))}
@@ -128,7 +128,7 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
   const currentQuarterData = quarters[currentQuarter - 1];
 
   return (
-    <div className="floating-card p-6 rounded-2xl">
+    <div className="max-w-6xl">{/* Limit calendar max width */}
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

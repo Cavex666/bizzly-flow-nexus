@@ -33,7 +33,7 @@ export const QuickStats = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 w-96">
+    <div className="grid grid-cols-2 gap-3">
       {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
@@ -46,12 +46,12 @@ export const QuickStats = () => {
               <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
                 <Icon className="w-4 h-4 text-white" />
               </div>
-              <div className={`text-xs px-2 py-1 rounded-full ${
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
                 stat.changeType === 'positive' 
-                  ? 'bg-success/10 text-success' 
-                  : 'bg-destructive/10 text-destructive'
+                  ? 'bg-success text-white' 
+                  : 'bg-destructive text-white'
               }`}>
-                {stat.change}
+                {stat.change.replace(' за месяц', '')}
               </div>
             </div>
             <h3 className="text-xs text-muted-foreground mb-1">{stat.title}</h3>

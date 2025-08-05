@@ -55,64 +55,75 @@ export const DashboardPage = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="flex gap-6">
+      <div className="flex gap-6 h-full">
         {/* Stats and Clients Section */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 w-96">
           {/* Quick Stats */}
-          <QuickStats />
+          <div className="floating-card p-6 rounded-2xl">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              Сводка за квартал
+            </h2>
+            <QuickStats />
+          </div>
           
           {/* Clients List */}
-          <div className="w-96">
+          <div className="floating-card p-6 rounded-2xl flex-1 flex flex-col">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
               Клиенты
             </h2>
-            <ClientsList
-              onClientSelect={setSelectedClient}
-              selectedClient={selectedClient}
-            />
+            <div className="flex-1">
+              <ClientsList
+                onClientSelect={setSelectedClient}
+                selectedClient={selectedClient}
+              />
+            </div>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 space-y-6">
-          {/* Calendar Header */}
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary" />
-              Календарь проектов
-            </h2>
-            <Button
-              onClick={() => setShowCalendarEditor(true)}
-              variant="outline"
-              size="sm"
-              className="gap-2"
-            >
-              <Settings className="w-4 h-4" />
-              Редактор календаря
-            </Button>
+        <div className="flex-1 space-y-6 flex flex-col">
+          {/* Quarterly Calendar */}
+          <div className="floating-card p-6 rounded-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-primary" />
+                Календарь проектов
+              </h2>
+              <Button
+                onClick={() => setShowCalendarEditor(true)}
+                variant="outline"
+                size="sm"
+                className="gap-2"
+              >
+                <Settings className="w-4 h-4" />
+                Редактор календаря
+              </Button>
+            </div>
+            
+            <QuarterlyCalendar
+              selectedProject={selectedProject}
+              selectedClient={selectedClient}
+            />
           </div>
 
-          {/* Quarterly Calendar */}
-          <QuarterlyCalendar
-            selectedProject={selectedProject}
-            selectedClient={selectedClient}
-          />
-
           {/* Projects List */}
-          <div>
+          <div className="floating-card p-6 rounded-2xl flex-1 flex flex-col">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <FolderOpen className="w-5 h-5 text-primary" />
               Все проекты
             </h2>
-            <ProjectsList
-              onProjectSelect={setSelectedProject}
-              selectedProject={selectedProject}
-              onProjectView={(project) => {
-                setViewingProject(project);
-                setShowProjectView(true);
-              }}
-            />
+            <div className="flex-1">
+              <ProjectsList
+                onProjectSelect={setSelectedProject}
+                selectedProject={selectedProject}
+                onProjectView={(project) => {
+                  setViewingProject(project);
+                  setShowProjectView(true);
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
