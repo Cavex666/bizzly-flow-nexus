@@ -293,7 +293,7 @@ export const AccountSettingsModal = ({
 
   return (
     <div className="modal-overlay fade-in" onClick={handleOverlayClick}>
-      <div className="modal-content slide-up max-w-4xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content slide-up w-full max-w-4xl h-auto min-h-[600px] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-2xl font-bold">Настройки аккаунта</h2>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-primary/10 transition-colors">
@@ -308,7 +308,7 @@ export const AccountSettingsModal = ({
               <TabsTrigger value="company">Организация</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="account" className="space-y-6 mt-6">
+            <TabsContent value="account" className="space-y-6 mt-6 min-h-[500px]">
               <Form {...profileForm}>
                 <form onSubmit={profileForm.handleSubmit(handleProfileSave)} className="space-y-6">
                   <div className="grid grid-cols-2 gap-6">
@@ -383,7 +383,7 @@ export const AccountSettingsModal = ({
               </Form>
             </TabsContent>
 
-            <TabsContent value="company" className="space-y-6 mt-6">
+            <TabsContent value="company" className="space-y-6 mt-6 min-h-[500px]">
               <Form {...companyForm}>
                 <form onSubmit={companyForm.handleSubmit(handleCompanySave)} className="space-y-6">
                   <div className="grid grid-cols-2 gap-6">
