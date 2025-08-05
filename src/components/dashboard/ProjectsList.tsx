@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button';
 interface ProjectsListProps {
   onProjectSelect: (projectId: string | null) => void;
   selectedProject: string | null;
+  onProjectView?: (project: any) => void;
 }
 
 type ProjectFilter = 'active' | 'all' | 'completed';
 
-export const ProjectsList = ({ onProjectSelect, selectedProject }: ProjectsListProps) => {
+export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }: ProjectsListProps) => {
   const [filter, setFilter] = useState<ProjectFilter>('active');
 
   // Mock projects data
@@ -108,17 +109,17 @@ export const ProjectsList = ({ onProjectSelect, selectedProject }: ProjectsListP
         {filteredProjects.map((project) => (
           <div
             key={project.id}
-            className={`floating-card p-6 rounded-2xl cursor-pointer transition-all duration-300 ${
+            className={`floating-card p-3 rounded-2xl cursor-pointer transition-all duration-300 ${
               selectedProject === project.id 
                 ? 'ring-2 ring-primary shadow-glow' 
                 : 'hover:shadow-lg'
             }`}
             onClick={() => onProjectSelect(selectedProject === project.id ? null : project.id)}
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start justify-between mb-2">
               <div>
-                <h4 className="text-lg font-semibold mb-1">{project.name}</h4>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <h4 className="text-sm font-semibold mb-1">{project.name}</h4>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
                   <User className="w-3 h-3" />
                   {project.client}
                 </p>
@@ -128,54 +129,60 @@ export const ProjectsList = ({ onProjectSelect, selectedProject }: ProjectsListP
                 <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(project.status)}`}>
                   {getStatusText(project.status)}
                 </span>
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Добавить логику для меню
+                  }}
+                >
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
             {/* Progress Bar */}
-            <div className="mb-4">
-              <div className="flex justify-between text-sm mb-1">
+            <div className="mb-2">
+              <div className="flex justify-between text-xs mb-1">
                 <span>Прогресс</span>
                 <span className="font-medium">{project.progress}%</span>
               </div>
-              <div className="w-full bg-muted rounded-full h-2">
+              <div className="w-full bg-muted rounded-full h-1.5">
                 <div
-                  className="bg-gradient-primary h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-primary h-1.5 rounded-full transition-all duration-500"
                   style={{ width: `${project.progress}%` }}
                 ></div>
               </div>
             </div>
 
             {/* Project Details */}
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-success" />
-                <span className="text-muted-foreground">Бюджет:</span>
+            <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+              <div className="flex items-center gap-1">
+                <DollarSign className="w-3 h-3 text-success" />
                 <span className="font-medium">{project.budget}</span>
               </div>
               
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary" />
+              <div className="flex items-center gap-1">
+                <Calendar className="w-3 h-3 text-primary" />
                 <span className="text-muted-foreground">
-                  {project.workDaysType === 'working' ? 'Рабочие дни' : 'Календарные дни'}
+                  {project.workDaysType === 'working' ? 'Рабочие' : 'Календарные'}
                 </span>
               </div>
             </div>
 
-            {/* Dates */}
-            <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
-              <div className="flex justify-between">
-                <span>Начало: {new Date(project.startDate).toLocaleDateString('ru-RU')}</span>
-                <span>Окончание: {new Date(project.endDate).toLocaleDateString('ru-RU')}</span>
-              </div>
-            </div>
-
             {/* Action Button */}
-            <div className="mt-4 pt-4 border-t border-border">
-              <Button variant="outline" size="sm" className="w-full gap-2">
-                <Eye className="w-4 h-4" />
+            <div className="pt-2 border-t border-border">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full gap-2 text-xs h-7"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onProjectView?.(project);
+                }}
+              >
+                <Eye className="w-3 h-3" />
                 Просмотр проекта
               </Button>
             </div>

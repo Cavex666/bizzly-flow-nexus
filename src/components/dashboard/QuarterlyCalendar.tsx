@@ -92,14 +92,14 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
         <div
           key={day}
           className={`
-            p-2 text-center text-sm rounded-lg cursor-pointer transition-all duration-200
+            aspect-square flex items-center justify-center text-xs sm:text-sm cursor-pointer transition-all duration-200
             ${isTodayDay 
-              ? 'bg-primary text-primary-foreground font-bold shadow-md' 
+              ? 'bg-primary text-primary-foreground font-bold shadow-md rounded-full scale-110' 
               : isProjectWorkDay 
-                ? 'bg-secondary/20 border border-secondary text-secondary-dark font-medium'
+                ? 'bg-secondary/20 border border-secondary text-secondary-dark font-medium rounded-full'
                 : isWeekendDay 
-                  ? 'bg-muted text-muted-foreground' 
-                  : 'hover:bg-primary/10'
+                  ? 'bg-muted text-muted-foreground rounded-full' 
+                  : 'hover:bg-primary/10 rounded-full'
             }
           `}
         >

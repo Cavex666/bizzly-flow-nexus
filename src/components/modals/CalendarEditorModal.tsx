@@ -5,8 +5,12 @@ interface CalendarEditorModalProps {
 }
 
 export const CalendarEditorModal = ({ onClose }: CalendarEditorModalProps) => {
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   return (
-    <div className="modal-overlay fade-in">
+    <div className="modal-overlay fade-in" onClick={handleOverlayClick}>
       <div className="modal-content slide-up">
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-2xl font-bold">Редактор календаря</h2>

@@ -8,13 +8,16 @@ import { ClientsList } from '../components/dashboard/ClientsList';
 import { CreateProjectModal } from '../components/modals/CreateProjectModal';
 import { CreateClientModal } from '../components/modals/CreateClientModal';
 import { CalendarEditorModal } from '../components/modals/CalendarEditorModal';
+import { ProjectViewModal } from '../components/modals/ProjectViewModal';
 
 export const DashboardPage = () => {
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [showCreateClient, setShowCreateClient] = useState(false);
   const [showCalendarEditor, setShowCalendarEditor] = useState(false);
+  const [showProjectView, setShowProjectView] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
+  const [viewingProject, setViewingProject] = useState<any>(null);
 
   return (
     <div className="space-y-6">
@@ -27,6 +30,13 @@ export const DashboardPage = () => {
         
         <div className="flex gap-3">
           <Button
+            variant="outline"
+            className="gap-2"
+          >
+            <DollarSign className="w-4 h-4" />
+            Добавить платеж
+          </Button>
+          <Button
             onClick={() => setShowCreateClient(true)}
             variant="outline"
             className="gap-2"
@@ -36,7 +46,7 @@ export const DashboardPage = () => {
           </Button>
           <Button
             onClick={() => setShowCreateProject(true)}
-            className="material-button gap-2"
+            className="material-button gap-2 relative z-40"
           >
             <Plus className="w-4 h-4" />
             Создать проект
@@ -44,13 +54,28 @@ export const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <QuickStats />
-
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Calendar Section */}
-        <div className="xl:col-span-2 space-y-6">
+      <div className="flex gap-6">
+        {/* Stats and Clients Section */}
+        <div className="flex flex-col gap-6">
+          {/* Quick Stats */}
+          <QuickStats />
+          
+          {/* Clients List */}
+          <div className="w-96">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-primary" />
+              Клиенты
+            </h2>
+            <ClientsList
+              onClientSelect={setSelectedClient}
+              selectedClient={selectedClient}
+            />
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 space-y-6">
           {/* Calendar Header */}
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -78,64 +103,16 @@ export const DashboardPage = () => {
           <div>
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <FolderOpen className="w-5 h-5 text-primary" />
-              Активные проекты
+              Все проекты
             </h2>
             <ProjectsList
               onProjectSelect={setSelectedProject}
               selectedProject={selectedProject}
+              onProjectView={(project) => {
+                setViewingProject(project);
+                setShowProjectView(true);
+              }}
             />
-          </div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Clients List */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Users className="w-5 h-5 text-primary" />
-              Клиенты
-            </h2>
-            <ClientsList
-              onClientSelect={setSelectedClient}
-              selectedClient={selectedClient}
-            />
-          </div>
-
-          {/* Quick Actions */}
-          <div className="floating-card p-6 rounded-2xl">
-            <h3 className="text-lg font-semibold mb-4">Быстрые действия</h3>
-            <div className="space-y-3">
-              <Button
-                onClick={() => setShowCreateProject(true)}
-                variant="outline"
-                className="w-full justify-start gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Новый проект
-              </Button>
-              <Button
-                onClick={() => setShowCreateClient(true)}
-                variant="outline"
-                className="w-full justify-start gap-2"
-              >
-                <Users className="w-4 h-4" />
-                Новый клиент
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2"
-              >
-                <DollarSign className="w-4 h-4" />
-                Добавить платеж
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2"
-              >
-                <TrendingUp className="w-4 h-4" />
-                Отчет
-              </Button>
-            </div>
           </div>
         </div>
       </div>
@@ -151,6 +128,13 @@ export const DashboardPage = () => {
       
       {showCalendarEditor && (
         <CalendarEditorModal onClose={() => setShowCalendarEditor(false)} />
+      )}
+      
+      {showProjectView && (
+        <ProjectViewModal 
+          onClose={() => setShowProjectView(false)} 
+          project={viewingProject}
+        />
       )}
     </div>
   );
