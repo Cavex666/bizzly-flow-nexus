@@ -287,9 +287,13 @@ export const AccountSettingsModal = ({
     if (e.target === e.currentTarget) onClose();
   };
 
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
+
   return (
     <div className="modal-overlay fade-in" onClick={handleOverlayClick}>
-      <div className="modal-content slide-up max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="modal-content slide-up max-w-4xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-2xl font-bold">Настройки аккаунта</h2>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-primary/10 transition-colors">
@@ -298,9 +302,7 @@ export const AccountSettingsModal = ({
         </div>
 
         <div className="p-6">
-          <Tabs value={activeTab} onValueChange={(value) => {
-            if (value) setActiveTab(value);
-          }}>
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
             <TabsList className="grid grid-cols-2 w-full">
               <TabsTrigger value="account">Профиль</TabsTrigger>
               <TabsTrigger value="company">Организация</TabsTrigger>
