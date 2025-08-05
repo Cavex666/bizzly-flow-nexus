@@ -14,6 +14,8 @@ import { useProjects } from '../hooks/useProjects';
 import { useClients } from '../hooks/useClients';
 import { toast } from '@/hooks/use-toast';
 
+import { useDashboard } from '../contexts/DashboardContext';
+
 export const DashboardPage = () => {
   const [showCalendarEditor, setShowCalendarEditor] = useState(false);
   const [showProjectView, setShowProjectView] = useState(false);
@@ -25,12 +27,12 @@ export const DashboardPage = () => {
   const [clientSearchQuery, setClientSearchQuery] = useState('');
   const [projectSearchQuery, setProjectSearchQuery] = useState('');
   
+  const dashboard = useDashboard();
   const { deleteProject } = useProjects();
   const { deleteClient } = useClients();
 
   const handleProjectEdit = (project: any) => {
-    // Project editing is now handled in DashboardLayout
-    console.log('Edit project:', project);
+    dashboard.handleProjectEdit(project);
   };
 
   const handleProjectDelete = async (project: any) => {
@@ -51,8 +53,7 @@ export const DashboardPage = () => {
   };
 
   const handleClientEdit = (client: any) => {
-    // Client editing is now handled in DashboardLayout
-    console.log('Edit client:', client);
+    dashboard.handleClientEdit(client);
   };
 
   const handleClientDelete = async (client: any) => {

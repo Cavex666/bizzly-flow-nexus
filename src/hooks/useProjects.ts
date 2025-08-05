@@ -64,7 +64,8 @@ export const useProjects = () => {
         },
         (payload) => {
           console.log('Project change detected:', payload);
-          console.log('Event type:', payload.eventType);
+          console.log('All payload keys:', Object.keys(payload));
+          console.log('eventType:', payload.eventType);
           
           // Immediately update local state for faster response
           const eventType = payload.eventType;
@@ -76,7 +77,7 @@ export const useProjects = () => {
             console.log('Updating project:', payload.new);
             setProjects(prev => prev.map(p => p.id === (payload.new as Project).id ? payload.new as Project : p));
           } else if (eventType === 'DELETE') {
-            console.log('Deleting project:', payload.old);
+            console.log('Deleting project with id:', payload.old?.id);
             setProjects(prev => prev.filter(p => p.id !== (payload.old as Project).id));
           } else {
             console.log('Unknown event type, doing full reload:', eventType);
@@ -94,22 +95,19 @@ export const useProjects = () => {
 
   const deleteProject = async (projectId: string) => {
     try {
-      // Optimistically remove from UI first
-      setProjects(prev => prev.filter(p => p.id !== projectId));
-      
       const { error } = await supabase
         .from('projects')
         .delete()
         .eq('id', projectId);
 
       if (error) {
-        // Revert optimistic update on error
-        await loadProjects();
         throw error;
       }
+      
+      // Real-time will handle the UI update automatically
+      console.log('Project deleted successfully, waiting for real-time update');
     } catch (error) {
-      // Revert optimistic update on error
-      await loadProjects();
+      console.error('Error deleting project:', error);
       throw error;
     }
   };

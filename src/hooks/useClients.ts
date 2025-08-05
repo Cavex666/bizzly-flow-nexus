@@ -59,7 +59,8 @@ export const useClients = () => {
         },
         (payload) => {
           console.log('Client change detected:', payload);
-          console.log('Event type:', payload.eventType);
+          console.log('All payload keys:', Object.keys(payload));
+          console.log('eventType:', payload.eventType);
           
           // Immediately update local state for faster response
           const eventType = payload.eventType;
@@ -71,7 +72,7 @@ export const useClients = () => {
             console.log('Updating client:', payload.new);
             setClients(prev => prev.map(c => c.id === (payload.new as Client).id ? payload.new as Client : c));
           } else if (eventType === 'DELETE') {
-            console.log('Deleting client:', payload.old);
+            console.log('Deleting client with id:', payload.old?.id);
             setClients(prev => prev.filter(c => c.id !== (payload.old as Client).id));
           } else {
             console.log('Unknown event type, doing full reload:', eventType);
@@ -89,22 +90,19 @@ export const useClients = () => {
 
   const deleteClient = async (clientId: string) => {
     try {
-      // Optimistically remove from UI first
-      setClients(prev => prev.filter(c => c.id !== clientId));
-      
       const { error } = await supabase
         .from('clients')
         .delete()
         .eq('id', clientId);
 
       if (error) {
-        // Revert optimistic update on error
-        await loadClients();
         throw error;
       }
+      
+      // Real-time will handle the UI update automatically
+      console.log('Client deleted successfully, waiting for real-time update');
     } catch (error) {
-      // Revert optimistic update on error
-      await loadClients();
+      console.error('Error deleting client:', error);
       throw error;
     }
   };
