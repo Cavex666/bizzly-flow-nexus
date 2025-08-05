@@ -130,7 +130,7 @@ export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }
             className={`floating-card p-4 rounded-2xl cursor-pointer transition-all duration-300 ${
               selectedProject === project.id 
                 ? 'ring-2 ring-primary shadow-glow' 
-                : 'hover:shadow-lg'
+                : ''
             }`}
             onClick={() => onProjectSelect(selectedProject === project.id ? null : project.id)}
           >
