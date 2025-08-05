@@ -7,8 +7,8 @@ export const Footer = () => {
   
   return (
     <>
-      <footer className="bg-white/90 backdrop-blur-xl border-t border-border/50 px-6 py-4">
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
+      <footer className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-border/50 px-6 py-4 z-30">
+        <div className="flex items-center justify-between text-sm text-muted-foreground ml-64">
           <div className="flex items-center gap-6">
             <p>© 2024 Bizzly. Все права защищены.</p>
             <button

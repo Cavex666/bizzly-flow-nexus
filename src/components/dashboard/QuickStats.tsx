@@ -46,7 +46,7 @@ export const QuickStats = () => {
               <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
                 <Icon className="w-4 h-4 text-white" />
               </div>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium ${
                 stat.changeType === 'positive' 
                   ? 'bg-success text-white' 
                   : 'bg-destructive text-white'

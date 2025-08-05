@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { Bell, Settings, LogOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,13 +13,30 @@ export const Header = ({
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu]);
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/');
   };
   return <>
-      <header className="bg-white/90 backdrop-blur-xl border-b border-border/50 shadow-sm px-6 py-4">
-        <div className="flex items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-border/50 shadow-sm px-6 py-4 z-40">
+        <div className="flex items-center justify-between ml-64">
           <div className="flex items-center gap-4">
             <h2 className="text-2xl font-bold text-slate-950">
               Добро пожаловать в Bizzly
@@ -34,7 +51,7 @@ export const Header = ({
             </button>
 
             {/* User Menu */}
-            <div className="relative">
+            <div className="relative" ref={menuRef}>
               <button onClick={() => setShowUserMenu(!showUserMenu)} className="flex items-center gap-3 p-2 rounded-xl hover:bg-primary/10 transition-colors">
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center text-white text-sm font-semibold bg-slate-950">
                   {user.email?.charAt(0).toUpperCase()}
@@ -48,7 +65,7 @@ export const Header = ({
               </button>
 
               {/* User Dropdown */}
-              {showUserMenu && <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-border/50 p-2 z-50 fade-in">
+              {showUserMenu && <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-border/50 p-2 z-[60] fade-in">
                   <button onClick={() => {
                 setShowSettings(true);
                 setShowUserMenu(false);

@@ -128,7 +128,7 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
   const currentQuarterData = quarters[currentQuarter - 1];
 
   return (
-    <div className="max-w-6xl">{/* Limit calendar max width */}
+    <div className="max-w-6xl mx-auto">{/* Center calendar and limit max width */}
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -163,15 +163,15 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
       {/* Legend */}
       <div className="flex flex-wrap gap-4 mb-6 text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-primary rounded"></div>
+          <div className="w-3 h-3 bg-primary rounded-full"></div>
           <span>Сегодня</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-secondary/20 border border-secondary rounded"></div>
+          <div className="w-3 h-3 bg-secondary/20 border border-secondary rounded-full"></div>
           <span>Рабочие дни проекта</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-muted rounded"></div>
+          <div className="w-3 h-3 bg-muted rounded-full"></div>
           <span>Выходные</span>
         </div>
       </div>
