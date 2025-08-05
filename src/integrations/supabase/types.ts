@@ -84,6 +84,7 @@ export type Database = {
         Row: {
           bank_details: string | null
           company_name: string | null
+          contact_person: string | null
           contact_person_authorities: string | null
           contact_person_name: string | null
           contact_person_name_genitive: string | null
@@ -99,6 +100,7 @@ export type Database = {
         Insert: {
           bank_details?: string | null
           company_name?: string | null
+          contact_person?: string | null
           contact_person_authorities?: string | null
           contact_person_name?: string | null
           contact_person_name_genitive?: string | null
@@ -114,6 +116,7 @@ export type Database = {
         Update: {
           bank_details?: string | null
           company_name?: string | null
+          contact_person?: string | null
           contact_person_authorities?: string | null
           contact_person_name?: string | null
           contact_person_name_genitive?: string | null
