@@ -14,18 +14,15 @@ export const Header = ({
   const [showSettings, setShowSettings] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
       }
     };
-
     if (showUserMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -38,7 +35,7 @@ export const Header = ({
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-border/50 shadow-sm px-6 py-4 z-40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 ml-64">
-            <h2 className="text-2xl font-bold text-slate-950">
+            <h2 className="text-2xl font-bold text-slate-950 my-0 mx-0 px-0">
               Добро пожаловать в Bizzly
             </h2>
           </div>
