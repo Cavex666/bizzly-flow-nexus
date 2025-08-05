@@ -50,7 +50,7 @@ export const ClientsList = ({
                   <span className="truncate">{client.phone}</span>
                 </div>
                 
-                <div className="flex items-center gap-1 text-xs text-muted-foreground px-0 mx-[12px] py-[16px] my-[13px]">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Mail className="w-3 h-3" />
                   <span className="truncate">{client.email}</span>
                 </div>
