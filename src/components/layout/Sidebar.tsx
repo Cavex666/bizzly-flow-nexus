@@ -87,8 +87,8 @@ export const Sidebar = ({ onCollapsedChange }: SidebarProps) => {
         <button 
           onClick={handleToggleCollapse} 
           className={cn(
-            "flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/10 transition-all duration-200 w-full justify-center",
-            collapsed && "justify-center"
+            "flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/10 transition-all duration-200 w-full",
+            collapsed ? "justify-center" : "justify-start"
           )}
         >
           {collapsed ? (
