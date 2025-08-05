@@ -152,7 +152,7 @@ export const CreateClientModal = ({ onClose, client }: CreateClientModalProps) =
 
   return (
     <div className="modal-overlay fade-in" onClick={handleOverlayClick}>
-      <div className="modal-content slide-up max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="modal-content slide-up max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="flex items-center gap-3">
             <Users className="w-6 h-6 text-primary" />

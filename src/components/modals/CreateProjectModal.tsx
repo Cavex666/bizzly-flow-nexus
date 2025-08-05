@@ -226,7 +226,7 @@ export const CreateProjectModal = ({ onClose, project }: CreateProjectModalProps
 
   return (
     <div className="modal-overlay fade-in" onClick={handleOverlayClick}>
-      <div className="modal-content slide-up max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="modal-content slide-up max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar">{/* Add custom scrollbar */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-2xl font-bold">{project ? 'Редактировать проект' : 'Создать проект'}</h2>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-primary/10">
