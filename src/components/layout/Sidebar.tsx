@@ -38,7 +38,7 @@ export const Sidebar = () => {
             B
           </div>
           {!collapsed && <div className="fade-in">
-              <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-slate-950">
                 Bizzly
               </h1>
               <p className="text-xs text-muted-foreground">Управление проектами</p>

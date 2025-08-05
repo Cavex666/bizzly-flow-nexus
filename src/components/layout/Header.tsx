@@ -21,7 +21,7 @@ export const Header = ({
       <header className="bg-white/90 backdrop-blur-xl border-b border-border/50 shadow-sm px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-bold text-foreground">
+            <h2 className="text-2xl font-bold text-slate-950">
               Добро пожаловать в Bizzly
             </h2>
           </div>
