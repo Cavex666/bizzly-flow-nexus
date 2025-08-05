@@ -57,8 +57,19 @@ export const useClients = () => {
           schema: 'public',
           table: 'clients'
         },
-        () => {
-          loadClients();
+        (payload) => {
+          console.log('Client change detected:', payload);
+          // Immediately update local state for faster response
+          if (payload.eventType === 'INSERT') {
+            setClients(prev => [payload.new as Client, ...prev]);
+          } else if (payload.eventType === 'UPDATE') {
+            setClients(prev => prev.map(c => c.id === payload.new.id ? payload.new as Client : c));
+          } else if (payload.eventType === 'DELETE') {
+            setClients(prev => prev.filter(c => c.id !== payload.old.id));
+          } else {
+            // Fallback to full reload for other cases
+            loadClients();
+          }
         }
       )
       .subscribe();
@@ -70,17 +81,22 @@ export const useClients = () => {
 
   const deleteClient = async (clientId: string) => {
     try {
+      // Optimistically remove from UI first
+      setClients(prev => prev.filter(c => c.id !== clientId));
+      
       const { error } = await supabase
         .from('clients')
         .delete()
         .eq('id', clientId);
 
       if (error) {
+        // Revert optimistic update on error
+        await loadClients();
         throw error;
       }
-
-      await loadClients();
     } catch (error) {
+      // Revert optimistic update on error
+      await loadClients();
       throw error;
     }
   };

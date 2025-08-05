@@ -87,7 +87,7 @@ export const DashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between mt-20 mb-6">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Дашборд</h1>
           <p className="text-muted-foreground">Обзор ваших проектов и финансов</p>

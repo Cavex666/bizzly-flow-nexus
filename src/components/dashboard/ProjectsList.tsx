@@ -166,20 +166,20 @@ export const ProjectsList = ({
           return (
             <div
               key={project.id}
-              className={`bg-card border border-border rounded-lg p-2 cursor-pointer transition-all duration-300 hover:border-primary/50 ${
+              className={`bg-card border border-border rounded-lg p-2 cursor-pointer transition-all duration-300 hover:border-primary/50 h-[120px] flex flex-col ${
                 selectedProject === project.id 
                   ? 'border-primary bg-primary/5' 
                   : ''
               }`}
               onClick={() => onProjectSelect(selectedProject === project.id ? null : project.id)}
             >
-              <div className="flex items-start gap-2">
+              <div className="flex items-start gap-2 flex-1">
                 <div className="w-6 h-6 bg-primary/20 rounded-md flex items-center justify-center flex-shrink-0">
                   <FolderOpen className="w-3 h-3 text-primary" />
                 </div>
                 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between mb-1">
+                <div className="flex-1 min-w-0 flex flex-col h-full">
+                  <div className="flex items-start justify-between mb-1 min-h-0">
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-xs mb-0.5 truncate">{project.name}</h4>
                       <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -239,8 +239,8 @@ export const ProjectsList = ({
                     </div>
                   </div>
 
-                  {/* Progress Bar and Status */}
-                  <div className="space-y-1">
+                  {/* Progress Bar and Status - pushed to bottom */}
+                  <div className="mt-auto space-y-1">
                     <div className="flex items-center justify-between">
                       <span className={`text-xs px-1.5 py-0.5 rounded-full ${getStatusColor(project.status)}`}>
                         {getStatusText(project.status)}

@@ -62,8 +62,19 @@ export const useProjects = () => {
           schema: 'public',
           table: 'projects'
         },
-        () => {
-          loadProjects();
+        (payload) => {
+          console.log('Project change detected:', payload);
+          // Immediately update local state for faster response
+          if (payload.eventType === 'INSERT') {
+            setProjects(prev => [payload.new as Project, ...prev]);
+          } else if (payload.eventType === 'UPDATE') {
+            setProjects(prev => prev.map(p => p.id === payload.new.id ? payload.new as Project : p));
+          } else if (payload.eventType === 'DELETE') {
+            setProjects(prev => prev.filter(p => p.id !== payload.old.id));
+          } else {
+            // Fallback to full reload for other cases
+            loadProjects();
+          }
         }
       )
       .subscribe();
@@ -75,17 +86,22 @@ export const useProjects = () => {
 
   const deleteProject = async (projectId: string) => {
     try {
+      // Optimistically remove from UI first
+      setProjects(prev => prev.filter(p => p.id !== projectId));
+      
       const { error } = await supabase
         .from('projects')
         .delete()
         .eq('id', projectId);
 
       if (error) {
+        // Revert optimistic update on error
+        await loadProjects();
         throw error;
       }
-
-      await loadProjects();
     } catch (error) {
+      // Revert optimistic update on error
+      await loadProjects();
       throw error;
     }
   };

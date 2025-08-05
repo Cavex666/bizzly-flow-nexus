@@ -63,19 +63,19 @@ export const ClientsList = ({
         return (
           <div 
             key={client.id} 
-            className={`bg-card border border-border rounded-lg p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 ${
+            className={`bg-card border border-border rounded-lg p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 h-[140px] flex flex-col ${
               selectedClient === client.id 
                 ? 'border-primary bg-primary/5' 
                 : ''
             }`} 
             onClick={() => onClientSelect(selectedClient === client.id ? null : client.id)}
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2 flex-1">
               <div className="w-6 h-6 bg-primary/20 rounded-md flex items-center justify-center flex-shrink-0">
                 <Users className="w-3 h-3 text-primary" />
               </div>
               
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 flex flex-col h-full">
                 <div className="flex items-start justify-between mb-1">
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-xs mb-0.5 truncate">{client.company_name}</h4>
@@ -141,7 +141,7 @@ export const ClientsList = ({
                   )}
                 </div>
                 
-                <div>
+                <div className="mt-auto">
                   <span className={`text-xs px-1.5 py-0.5 rounded-full ${
                     activeProjectsCount > 0 
                       ? 'bg-success/10 text-success' 
