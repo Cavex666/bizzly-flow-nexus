@@ -5,24 +5,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
 interface AccountSettingsModalProps {
   user: User;
   onClose: () => void;
 }
-
-export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProps) => {
+export const AccountSettingsModal = ({
+  user,
+  onClose
+}: AccountSettingsModalProps) => {
   const [activeTab, setActiveTab] = useState('account');
-
-  return (
-    <div className="modal-overlay fade-in">
+  return <div className="modal-overlay fade-in">
       <div className="modal-content slide-up max-w-4xl">
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-2xl font-bold">Настройки аккаунта</h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-xl hover:bg-primary/10 transition-colors"
-          >
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-primary/10 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -39,22 +35,12 @@ export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProp
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="email">Электронная почта</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    defaultValue={user.email}
-                    className="material-input"
-                  />
+                  <Input id="email" type="email" defaultValue={user.email} className="material-input" />
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Номер телефона</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+375 (XX) XXX-XX-XX"
-                    className="material-input"
-                  />
+                  <Input id="phone" type="tel" placeholder="+375 (XX) XXX-XX-XX" className="material-input" />
                 </div>
 
                 <div className="space-y-2">
@@ -90,45 +76,27 @@ export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProp
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="companyName">Наименование организации</Label>
-                  <Input
-                    id="companyName"
-                    placeholder="ООО &quot;Биззли Бай&quot;"
-                    className="material-input"
-                  />
+                  <Input id="companyName" placeholder="ООО &quot;Биззли Бай&quot;" className="material-input" />
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="contactPerson">Контактное лицо</Label>
-                  <Input
-                    id="contactPerson"
-                    placeholder="Иванов Иван Иванович"
-                    className="material-input"
-                  />
+                  <Input id="contactPerson" placeholder="Иванов Иван Иванович" className="material-input" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="companyPhone">Номер телефона</Label>
-                  <Input
-                    id="companyPhone"
-                    type="tel"
-                    placeholder="+375 (XX) XXX-XX-XX"
-                    className="material-input"
-                  />
+                  <Input id="companyPhone" type="tel" placeholder="+375 (XX) XXX-XX-XX" className="material-input" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="companyEmail">Email</Label>
-                  <Input
-                    id="companyEmail"
-                    type="email"
-                    placeholder="info@company.com"
-                    className="material-input"
-                  />
+                  <Input id="companyEmail" type="email" placeholder="info@company.com" className="material-input" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="country">Страна</Label>
-                  <select className="material-input w-full">
+                  <select className="material-input w-full py-[7px] mx-0 px-0">
                     <option value="BY">Беларусь</option>
                     <option value="RU">Россия</option>
                     <option value="UA">Украина</option>
@@ -137,38 +105,22 @@ export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProp
 
                 <div className="space-y-2">
                   <Label htmlFor="position">Должность ответственного лица</Label>
-                  <Input
-                    id="position"
-                    placeholder="Директор"
-                    className="material-input"
-                  />
+                  <Input id="position" placeholder="Директор" className="material-input" />
                 </div>
 
                 <div className="col-span-2 space-y-2">
                   <Label htmlFor="bankDetails">Реквизиты</Label>
-                  <textarea
-                    id="bankDetails"
-                    className="material-input w-full h-24 resize-none"
-                    placeholder="Банковские реквизиты организации..."
-                  />
+                  <textarea id="bankDetails" className="material-input w-full h-24 resize-none" placeholder="Банковские реквизиты организации..." />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="authorities">Полномочия ответственного лица</Label>
-                  <Input
-                    id="authorities"
-                    placeholder="на основании устава"
-                    className="material-input"
-                  />
+                  <Input id="authorities" placeholder="на основании устава" className="material-input" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="nameGenitive">ФИО в родительном падеже</Label>
-                  <Input
-                    id="nameGenitive"
-                    placeholder="Иванова Ивана Ивановича"
-                    className="material-input"
-                  />
+                  <Input id="nameGenitive" placeholder="Иванова Ивана Ивановича" className="material-input" />
                 </div>
               </div>
               
@@ -185,13 +137,7 @@ export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProp
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Стандартные шаблоны</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    {[
-                      'Контракт общая стоимость',
-                      'Контракт стоимость за единицу',
-                      'Акт общая стоимость',
-                      'Акт стоимость за единицу'
-                    ].map((template) => (
-                      <div key={template} className="floating-card p-4 rounded-2xl">
+                    {['Контракт общая стоимость', 'Контракт стоимость за единицу', 'Акт общая стоимость', 'Акт стоимость за единицу'].map(template => <div key={template} className="floating-card p-4 rounded-2xl">
                         <div className="flex items-center justify-between">
                           <span className="font-medium">{template}</span>
                           <Button variant="outline" size="sm">
@@ -199,8 +145,7 @@ export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProp
                             Загрузить
                           </Button>
                         </div>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </div>
 
@@ -212,11 +157,7 @@ export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProp
                       <p className="text-lg font-medium mb-2">Загрузите пользовательский шаблон</p>
                       <p className="text-muted-foreground mb-4">Поддерживаются файлы .docx</p>
                       <div className="flex gap-3 justify-center">
-                        <Input
-                          type="text"
-                          placeholder="Название шаблона"
-                          className="material-input max-w-xs"
-                        />
+                        <Input type="text" placeholder="Название шаблона" className="material-input max-w-xs" />
                         <Button className="material-button">
                           <Upload className="w-4 h-4 mr-2" />
                           Выбрать файл
@@ -227,19 +168,14 @@ export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProp
 
                   {/* Example user templates */}
                   <div className="space-y-3 mt-4">
-                    {[
-                      'Спецификация оборудования',
-                      'Техническое задание'
-                    ].map((template) => (
-                      <div key={template} className="floating-card p-4 rounded-2xl">
+                    {['Спецификация оборудования', 'Техническое задание'].map(template => <div key={template} className="floating-card p-4 rounded-2xl">
                         <div className="flex items-center justify-between">
                           <span className="font-medium">{template}</span>
                           <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </div>
               </div>
@@ -247,6 +183,5 @@ export const AccountSettingsModal = ({ user, onClose }: AccountSettingsModalProp
           </Tabs>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
