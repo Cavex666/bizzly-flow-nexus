@@ -15,8 +15,6 @@ import { useClients } from '../hooks/useClients';
 import { toast } from '@/hooks/use-toast';
 
 export const DashboardPage = () => {
-  const [showCreateProject, setShowCreateProject] = useState(false);
-  const [showCreateClient, setShowCreateClient] = useState(false);
   const [showCalendarEditor, setShowCalendarEditor] = useState(false);
   const [showProjectView, setShowProjectView] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
@@ -31,8 +29,8 @@ export const DashboardPage = () => {
   const { deleteClient } = useClients();
 
   const handleProjectEdit = (project: any) => {
-    setEditingProject(project);
-    setShowCreateProject(true);
+    // Project editing is now handled in DashboardLayout
+    console.log('Edit project:', project);
   };
 
   const handleProjectDelete = async (project: any) => {
@@ -53,8 +51,8 @@ export const DashboardPage = () => {
   };
 
   const handleClientEdit = (client: any) => {
-    setEditingClient(client);
-    setShowCreateClient(true);
+    // Client editing is now handled in DashboardLayout
+    console.log('Edit client:', client);
   };
 
   const handleClientDelete = async (client: any) => {
@@ -74,48 +72,17 @@ export const DashboardPage = () => {
     }
   };
 
-  const handleCloseCreateProject = () => {
-    setShowCreateProject(false);
-    setEditingProject(null);
-  };
-
   const handleCloseCreateClient = () => {
-    setShowCreateClient(false);
-    setEditingClient(null);
+    // These functions are no longer needed as modals are handled in DashboardLayout
   };
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Page Header - simplified since buttons are now in header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Дашборд</h1>
           <p className="text-muted-foreground">Обзор ваших проектов и финансов</p>
-        </div>
-        
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            className="gap-2"
-          >
-            <DollarSign className="w-4 h-4" />
-            Добавить платеж
-          </Button>
-          <Button
-            onClick={() => setShowCreateClient(true)}
-            variant="outline"
-            className="gap-2"
-          >
-            <Users className="w-4 h-4" />
-            Добавить клиента
-          </Button>
-          <Button
-            onClick={() => setShowCreateProject(true)}
-            className="material-button gap-2 relative z-20"
-          >
-            <Plus className="w-4 h-4" />
-            Создать проект
-          </Button>
         </div>
       </div>
 
@@ -224,21 +191,7 @@ export const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Modals */}
-      {showCreateProject && (
-        <CreateProjectModal 
-          onClose={handleCloseCreateProject} 
-          project={editingProject}
-        />
-      )}
-      
-      {showCreateClient && (
-        <CreateClientModal 
-          onClose={handleCloseCreateClient} 
-          client={editingClient}
-        />
-      )}
-      
+      {/* Modals - only non-create modals remain here */}
       {showCalendarEditor && (
         <CalendarEditorModal onClose={() => setShowCalendarEditor(false)} />
       )}

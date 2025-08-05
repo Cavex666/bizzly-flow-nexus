@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { DashboardLayout } from './DashboardLayout';
 import { Footer } from './Footer';
 
 interface AppLayoutProps {
@@ -61,10 +62,18 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <Sidebar onCollapsedChange={setSidebarCollapsed} />
         </div>
         <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
-          <Header user={user} />
-          <main className="flex-1 p-6 pb-20">
-            {children}
-          </main>
+          {location.pathname === '/dashboard' ? (
+            <DashboardLayout user={user}>
+              {children}
+            </DashboardLayout>
+          ) : (
+            <>
+              <Header user={user} />
+              <main className="flex-1 p-6 pb-20">
+                {children}
+              </main>
+            </>
+          )}
           <Footer />
         </div>
       </div>

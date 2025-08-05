@@ -1,14 +1,21 @@
 import { useState, useRef, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
-import { Bell, Settings, LogOut } from 'lucide-react';
+import { Settings, LogOut, Plus, Users, DollarSign } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { AccountSettingsModal } from '../modals/AccountSettingsModal';
 interface HeaderProps {
   user: User;
+  onCreateProject?: () => void;
+  onCreateClient?: () => void;
+  onCreatePayment?: () => void;
 }
 export const Header = ({
-  user
+  user,
+  onCreateProject,
+  onCreateClient,
+  onCreatePayment
 }: HeaderProps) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -34,18 +41,48 @@ export const Header = ({
   return <>
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-border/50 shadow-sm px-6 py-4 z-40">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 ml-64">
+          <div className="flex items-center gap-4">
             <h2 className="text-2xl font-bold text-slate-950 my-0 mx-0 px-0">
-              Добро пожаловать в Bizzly
+              Bizzly
             </h2>
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Notifications */}
-            <button className="relative p-2 rounded-xl transition-colors bg-slate-950 hover:bg-slate-800">
-              <Bell className="w-5 h-5 text-muted-foreground bg-slate-950" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full"></div>
-            </button>
+            {/* Action Buttons */}
+            <div className="flex gap-2">
+              {onCreatePayment && (
+                <Button
+                  onClick={onCreatePayment}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <DollarSign className="w-4 h-4" />
+                  Добавить платеж
+                </Button>
+              )}
+              {onCreateClient && (
+                <Button
+                  onClick={onCreateClient}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Users className="w-4 h-4" />
+                  Добавить клиента
+                </Button>
+              )}
+              {onCreateProject && (
+                <Button
+                  onClick={onCreateProject}
+                  size="sm"
+                  className="material-button gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Создать проект
+                </Button>
+              )}
+            </div>
 
             {/* User Menu */}
             <div className="relative" ref={menuRef}>

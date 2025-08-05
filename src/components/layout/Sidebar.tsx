@@ -82,8 +82,8 @@ export const Sidebar = ({ onCollapsedChange }: SidebarProps) => {
         </nav>
       </div>
 
-      {/* Collapse Toggle - at bottom */}
-      <div className="p-4">
+      {/* Collapse Toggle - moved up to avoid footer overlap */}
+      <div className="p-4 mt-auto pb-20">
         <button 
           onClick={handleToggleCollapse} 
           className={cn(
