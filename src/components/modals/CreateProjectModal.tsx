@@ -63,6 +63,8 @@ export const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
+      shortName: '',
+      basis: '',
       currency: 'BYN',
       vatEnabled: false,
       vatRate: 20,
@@ -74,6 +76,7 @@ export const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
       startDate: addDays(new Date(), 7),
       contractDate: addBusinessDays(new Date(), 3),
       clientId: '',
+      comments: '',
     },
   });
 

@@ -93,7 +93,7 @@ export const AccountSettingsModal = ({
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         toast({ title: 'Ошибка', description: 'Не удалось загрузить профиль' });
@@ -120,7 +120,7 @@ export const AccountSettingsModal = ({
         .from('company_settings')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         toast({ title: 'Ошибка', description: 'Не удалось загрузить настройки организации' });
@@ -188,30 +188,65 @@ export const AccountSettingsModal = ({
   const handleCompanySave = async (data: any) => {
     setIsSavingCompany(true);
     try {
-      const { error } = await supabase
+      // Check if company settings already exist
+      const { data: existingData } = await supabase
         .from('company_settings')
-        .upsert({
-          user_id: user.id,
-          company_name: data.companyName,
-          legal_name: data.legalName,
-          contact_person_name: data.contactPersonName,
-          contact_person_position: data.contactPersonPosition,
-          contact_person_authorities: data.contactPersonAuthorities,
-          contact_person_name_genitive: data.contactPersonNameGenitive,
-          contact_person_position_genitive: data.contactPersonPositionGenitive,
-          contact_person_authorities_prepositional: data.contactPersonAuthoritiesPrepositional,
-          phone: data.phone,
-          email: data.email,
-          address: data.address,
-          tax_id: data.taxId,
-          registration_number: data.registrationNumber,
-          bank_name: data.bankName,
-          bank_account: data.bankAccount,
-          bank_routing: data.bankRouting,
-          website: data.website,
-        });
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (error) {
+      let result;
+      if (existingData) {
+        // Update existing record
+        result = await supabase
+          .from('company_settings')
+          .update({
+            company_name: data.companyName,
+            legal_name: data.legalName,
+            contact_person_name: data.contactPersonName,
+            contact_person_position: data.contactPersonPosition,
+            contact_person_authorities: data.contactPersonAuthorities,
+            contact_person_name_genitive: data.contactPersonNameGenitive,
+            contact_person_position_genitive: data.contactPersonPositionGenitive,
+            contact_person_authorities_prepositional: data.contactPersonAuthoritiesPrepositional,
+            phone: data.phone,
+            email: data.email,
+            address: data.address,
+            tax_id: data.taxId,
+            registration_number: data.registrationNumber,
+            bank_name: data.bankName,
+            bank_account: data.bankAccount,
+            bank_routing: data.bankRouting,
+            website: data.website,
+          })
+          .eq('user_id', user.id);
+      } else {
+        // Insert new record
+        result = await supabase
+          .from('company_settings')
+          .insert({
+            user_id: user.id,
+            company_name: data.companyName,
+            legal_name: data.legalName,
+            contact_person_name: data.contactPersonName,
+            contact_person_position: data.contactPersonPosition,
+            contact_person_authorities: data.contactPersonAuthorities,
+            contact_person_name_genitive: data.contactPersonNameGenitive,
+            contact_person_position_genitive: data.contactPersonPositionGenitive,
+            contact_person_authorities_prepositional: data.contactPersonAuthoritiesPrepositional,
+            phone: data.phone,
+            email: data.email,
+            address: data.address,
+            tax_id: data.taxId,
+            registration_number: data.registrationNumber,
+            bank_name: data.bankName,
+            bank_account: data.bankAccount,
+            bank_routing: data.bankRouting,
+            website: data.website,
+          });
+      }
+
+      if (result.error) {
         toast({ title: 'Ошибка', description: 'Не удалось сохранить настройки организации' });
         return;
       }
