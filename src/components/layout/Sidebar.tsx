@@ -31,9 +31,9 @@ export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   return <div className={cn("bg-white/90 backdrop-blur-xl border-r border-border/50 shadow-xl transition-all duration-300", collapsed ? "w-16" : "w-64")}>
-      <div className="p-4">
+      <div className={cn("p-4", collapsed && "px-2")}>
         {/* Logo */}
-        <div className="flex items-center gap-3 mb-8">
+        <div className={cn("flex items-center gap-3 mb-8", collapsed && "justify-center")}>
           <div className="w-10 h-10 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-xl bg-slate-950">
             B
           </div>
@@ -50,18 +50,35 @@ export const Sidebar = () => {
           {menuItems.map(item => {
           const Icon = item.icon;
           const isActive = location.pathname === item.to;
-          return <NavLink key={item.to} to={item.to} className={cn("sidebar-item group", isActive && "active")}>
-                <Icon className="w-5 h-5 flex-shrink-0 my-0 mx-0 px-0" />
+          return <NavLink 
+            key={item.to} 
+            to={item.to} 
+            className={cn(
+              "sidebar-item group relative flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200",
+              collapsed && "justify-center px-2",
+              isActive 
+                ? "bg-primary/10 text-primary" 
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            )}
+          >
+                <Icon className={cn("w-5 h-5 flex-shrink-0", collapsed && "mx-auto")} />
                 {!collapsed && <span className="font-medium fade-in">{item.label}</span>}
                 
                 {/* Active indicator */}
-                {isActive && <div className="absolute right-0 w-1 h-8 bg-primary rounded-l-full" />}
+                {isActive && !collapsed && <div className="absolute right-2 w-2 h-2 bg-primary rounded-full" />}
+                {isActive && collapsed && <div className="absolute right-1 w-1 h-6 bg-primary rounded-l-full" />}
               </NavLink>;
         })}
         </nav>
 
         {/* Collapse Toggle */}
-        <button onClick={() => setCollapsed(!collapsed)} className="mt-8 w-full flex items-center justify-center p-2 rounded-xl hover:bg-primary/10 transition-colors">
+        <button 
+          onClick={() => setCollapsed(!collapsed)} 
+          className={cn(
+            "mt-8 flex items-center justify-center p-2 rounded-xl hover:bg-primary/10 transition-colors",
+            collapsed ? "w-10 h-10 mx-auto" : "w-full"
+          )}
+        >
           {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
         </button>
       </div>

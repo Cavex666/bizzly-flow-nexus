@@ -127,18 +127,18 @@ export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }
         {filteredProjects.map((project) => (
           <div
             key={project.id}
-            className={`floating-card p-3 rounded-2xl cursor-pointer transition-all duration-300 ${
+            className={`glass-card p-4 rounded-xl cursor-pointer transition-all duration-200 ${
               selectedProject === project.id 
-                ? 'ring-2 ring-primary shadow-glow' 
-                : 'hover:shadow-lg'
+                ? 'ring-2 ring-primary shadow-lg' 
+                : 'hover:shadow-md'
             }`}
             onClick={() => onProjectSelect(selectedProject === project.id ? null : project.id)}
           >
-            <div className="flex items-start justify-between mb-2">
-              <div>
-                <h4 className="text-sm font-semibold mb-1">{project.name}</h4>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <User className="w-3 h-3" />
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <h4 className="font-semibold text-foreground mb-1">{project.name}</h4>
+                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                  <User className="w-4 h-4" />
                   {project.client}
                 </p>
               </div>
@@ -161,28 +161,28 @@ export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }
             </div>
 
             {/* Progress Bar */}
-            <div className="mb-2">
-              <div className="flex justify-between text-xs mb-1">
+            <div className="mb-3">
+              <div className="flex justify-between text-sm mb-2">
                 <span>Прогресс</span>
                 <span className="font-medium">{project.progress}%</span>
               </div>
-              <div className="w-full bg-muted rounded-full h-1.5">
+              <div className="w-full bg-muted rounded-full h-2">
                 <div
-                  className="bg-gradient-primary h-1.5 rounded-full transition-all duration-500"
+                  className="bg-gradient-primary h-2 rounded-full transition-all duration-500"
                   style={{ width: `${project.progress}%` }}
                 ></div>
               </div>
             </div>
 
             {/* Project Details */}
-            <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-              <div className="flex items-center gap-1">
-                <DollarSign className="w-3 h-3 text-success" />
+            <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+              <div className="flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-success" />
                 <span className="font-medium">{project.budget}</span>
               </div>
               
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-primary" />
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-primary" />
                 <span className="text-muted-foreground">
                   {project.workDaysType === 'working' ? 'Рабочие' : 'Календарные'}
                 </span>
@@ -190,17 +190,17 @@ export const ProjectsList = ({ onProjectSelect, selectedProject, onProjectView }
             </div>
 
             {/* Action Button */}
-            <div className="pt-2 border-t border-border">
+            <div className="pt-3 border-t border-border">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full gap-2 text-xs h-7"
+                className="w-full gap-2"
                 onClick={(e) => {
                   e.stopPropagation();
                   onProjectView?.(project);
                 }}
               >
-                <Eye className="w-3 h-3" />
+                <Eye className="w-4 h-4" />
                 Просмотр проекта
               </Button>
             </div>
