@@ -108,8 +108,8 @@ export const DashboardPage = () => {
             </h2>
             
             {/* Search Input */}
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <div className="relative mb-4 -mx-6 px-6">
+              <Search className="absolute left-9 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Поиск по названию компании или контактному лицу..."
                 value={clientSearchQuery}
@@ -164,8 +164,8 @@ export const DashboardPage = () => {
             </h2>
             
             {/* Search Input */}
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <div className="relative mb-4 -mx-6 px-6">
+              <Search className="absolute left-9 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Поиск по названию проекта или клиенту..."
                 value={projectSearchQuery}
