@@ -1,21 +1,232 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { X, Save, Upload, Trash2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+
+const profileSchema = z.object({
+  displayName: z.string().optional(),
+  phone: z.string().optional(),
+});
+
+const companySchema = z.object({
+  companyName: z.string().optional(),
+  legalName: z.string().optional(),
+  contactPersonName: z.string().optional(),
+  contactPersonPosition: z.string().optional(),
+  contactPersonAuthorities: z.string().optional(),
+  contactPersonNameGenitive: z.string().optional(),
+  contactPersonPositionGenitive: z.string().optional(),
+  contactPersonAuthoritiesPrepositional: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().email().optional().or(z.literal('')),
+  address: z.string().optional(),
+  taxId: z.string().optional(),
+  registrationNumber: z.string().optional(),
+  bankName: z.string().optional(),
+  bankAccount: z.string().optional(),
+  bankRouting: z.string().optional(),
+  website: z.string().optional(),
+});
+
 interface AccountSettingsModalProps {
   user: User;
   onClose: () => void;
 }
+
 export const AccountSettingsModal = ({
   user,
   onClose
 }: AccountSettingsModalProps) => {
   const [activeTab, setActiveTab] = useState('account');
-  return <div className="modal-overlay fade-in">
-      <div className="modal-content slide-up max-w-4xl">
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isLoadingCompany, setIsLoadingCompany] = useState(true);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [isSavingCompany, setIsSavingCompany] = useState(false);
+
+  const profileForm = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      displayName: '',
+      phone: '',
+    },
+  });
+
+  const companyForm = useForm({
+    resolver: zodResolver(companySchema),
+    defaultValues: {
+      companyName: '',
+      legalName: '',
+      contactPersonName: '',
+      contactPersonPosition: '',
+      contactPersonAuthorities: '',
+      contactPersonNameGenitive: '',
+      contactPersonPositionGenitive: '',
+      contactPersonAuthoritiesPrepositional: '',
+      phone: '',
+      email: '',
+      address: '',
+      taxId: '',
+      registrationNumber: '',
+      bankName: '',
+      bankAccount: '',
+      bankRouting: '',
+      website: '',
+    },
+  });
+
+  const loadProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        toast({ title: 'Ошибка', description: 'Не удалось загрузить профиль' });
+        return;
+      }
+
+      if (data) {
+        profileForm.reset({
+          displayName: data.display_name || '',
+          phone: data.phone || '',
+        });
+      }
+    } catch (error) {
+      toast({ title: 'Ошибка', description: 'Произошла ошибка при загрузке профиля' });
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
+
+  const loadCompanySettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('company_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        toast({ title: 'Ошибка', description: 'Не удалось загрузить настройки организации' });
+        return;
+      }
+
+      if (data) {
+        companyForm.reset({
+          companyName: data.company_name || '',
+          legalName: data.legal_name || '',
+          contactPersonName: data.contact_person_name || '',
+          contactPersonPosition: data.contact_person_position || '',
+          contactPersonAuthorities: data.contact_person_authorities || '',
+          contactPersonNameGenitive: data.contact_person_name_genitive || '',
+          contactPersonPositionGenitive: data.contact_person_position_genitive || '',
+          contactPersonAuthoritiesPrepositional: data.contact_person_authorities_prepositional || '',
+          phone: data.phone || '',
+          email: data.email || '',
+          address: data.address || '',
+          taxId: data.tax_id || '',
+          registrationNumber: data.registration_number || '',
+          bankName: data.bank_name || '',
+          bankAccount: data.bank_account || '',
+          bankRouting: data.bank_routing || '',
+          website: data.website || '',
+        });
+      }
+    } catch (error) {
+      toast({ title: 'Ошибка', description: 'Произошла ошибка при загрузке настроек организации' });
+    } finally {
+      setIsLoadingCompany(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProfile();
+    loadCompanySettings();
+  }, [user.id]);
+
+  const handleProfileSave = async (data: any) => {
+    setIsSavingProfile(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: user.id,
+          display_name: data.displayName,
+          phone: data.phone,
+        });
+
+      if (error) {
+        toast({ title: 'Ошибка', description: 'Не удалось сохранить профиль' });
+        return;
+      }
+
+      toast({ title: 'Успех', description: 'Профиль успешно сохранен' });
+    } catch (error) {
+      toast({ title: 'Ошибка', description: 'Произошла ошибка при сохранении профиля' });
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  const handleCompanySave = async (data: any) => {
+    setIsSavingCompany(true);
+    try {
+      const { error } = await supabase
+        .from('company_settings')
+        .upsert({
+          user_id: user.id,
+          company_name: data.companyName,
+          legal_name: data.legalName,
+          contact_person_name: data.contactPersonName,
+          contact_person_position: data.contactPersonPosition,
+          contact_person_authorities: data.contactPersonAuthorities,
+          contact_person_name_genitive: data.contactPersonNameGenitive,
+          contact_person_position_genitive: data.contactPersonPositionGenitive,
+          contact_person_authorities_prepositional: data.contactPersonAuthoritiesPrepositional,
+          phone: data.phone,
+          email: data.email,
+          address: data.address,
+          tax_id: data.taxId,
+          registration_number: data.registrationNumber,
+          bank_name: data.bankName,
+          bank_account: data.bankAccount,
+          bank_routing: data.bankRouting,
+          website: data.website,
+        });
+
+      if (error) {
+        toast({ title: 'Ошибка', description: 'Не удалось сохранить настройки организации' });
+        return;
+      }
+
+      toast({ title: 'Успех', description: 'Настройки организации успешно сохранены' });
+    } catch (error) {
+      toast({ title: 'Ошибка', description: 'Произошла ошибка при сохранении настроек организации' });
+    } finally {
+      setIsSavingCompany(false);
+    }
+  };
+
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  return (
+    <div className="modal-overlay fade-in" onClick={handleOverlayClick}>
+      <div className="modal-content slide-up max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-2xl font-bold">Настройки аккаунта</h2>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-primary/10 transition-colors">
@@ -25,163 +236,259 @@ export const AccountSettingsModal = ({
 
         <div className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-3 w-full">
-              <TabsTrigger value="account">Аккаунт</TabsTrigger>
+            <TabsList className="grid grid-cols-2 w-full">
+              <TabsTrigger value="account">Профиль</TabsTrigger>
               <TabsTrigger value="company">Организация</TabsTrigger>
-              <TabsTrigger value="templates">Шаблоны</TabsTrigger>
             </TabsList>
 
             <TabsContent value="account" className="space-y-6 mt-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Электронная почта</Label>
-                  <Input id="email" type="email" defaultValue={user.email} className="material-input" />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Номер телефона</Label>
-                  <Input id="phone" type="tel" placeholder="+375 (XX) XXX-XX-XX" className="material-input" />
-                </div>
+              <Form {...profileForm}>
+                <form onSubmit={profileForm.handleSubmit(handleProfileSave)} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label>Электронная почта</Label>
+                      <Input value={user.email || ''} disabled className="bg-muted" />
+                      <p className="text-sm text-muted-foreground">Email нельзя изменить</p>
+                    </div>
+                    
+                    <FormField
+                      control={profileForm.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Номер телефона</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="+375 (XX) XXX-XX-XX" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="space-y-2">
-                  <Label htmlFor="currency">Валюта по умолчанию</Label>
-                  <select className="material-input w-full">
-                    <option value="BYN">BYN - Белорусский рубль</option>
-                    <option value="USD">USD - Доллар США</option>
-                    <option value="EUR">EUR - Евро</option>
-                    <option value="RUB">RUB - Российский рубль</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="region">Регион по умолчанию</Label>
-                  <select className="material-input w-full">
-                    <option value="BY">Беларусь</option>
-                    <option value="RU">Россия</option>
-                    <option value="UA">Украина</option>
-                    <option value="PL">Польша</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div className="flex gap-3 pt-4">
-                <Button className="material-button">
-                  <Save className="w-4 h-4 mr-2" />
-                  Сохранить изменения
-                </Button>
-              </div>
+                    <FormField
+                      control={profileForm.control}
+                      name="displayName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Отображаемое имя</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Иван Иванов" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="flex gap-3 pt-4">
+                    <Button type="submit" disabled={isSavingProfile || isLoadingProfile}>
+                      <Save className="w-4 h-4 mr-2" />
+                      {isSavingProfile ? 'Сохранение...' : 'Сохранить профиль'}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
             </TabsContent>
 
             <TabsContent value="company" className="space-y-6 mt-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="companyName">Наименование организации</Label>
-                  <Input id="companyName" placeholder="ООО &quot;Биззли Бай&quot;" className="material-input" />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="contactPerson">Контактное лицо</Label>
-                  <Input id="contactPerson" placeholder="Иванов Иван Иванович" className="material-input" />
-                </div>
+              <Form {...companyForm}>
+                <form onSubmit={companyForm.handleSubmit(handleCompanySave)} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-6">
+                    <FormField
+                      control={companyForm.control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Наименование организации</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder='ООО "Биззли Бай"' />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={companyForm.control}
+                      name="legalName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Полное юридическое название</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder='Общество с ограниченной ответственностью "Биззли Бай"' />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="space-y-2">
-                  <Label htmlFor="companyPhone">Номер телефона</Label>
-                  <Input id="companyPhone" type="tel" placeholder="+375 (XX) XXX-XX-XX" className="material-input" />
-                </div>
+                    <FormField
+                      control={companyForm.control}
+                      name="contactPersonName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ФИО ответственного лица</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Иванов Иван Иванович" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="space-y-2">
-                  <Label htmlFor="companyEmail">Email</Label>
-                  <Input id="companyEmail" type="email" placeholder="info@company.com" className="material-input" />
-                </div>
+                    <FormField
+                      control={companyForm.control}
+                      name="contactPersonPosition"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Должность ответственного лица</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Директор" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="space-y-2">
-                  <Label htmlFor="country">Страна</Label>
-                  <select className="material-input w-full py-[7px] mx-0 px-0">
-                    <option value="BY">Беларусь</option>
-                    <option value="RU">Россия</option>
-                    <option value="UA">Украина</option>
-                  </select>
-                </div>
+                    <FormField
+                      control={companyForm.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Номер телефона</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="+375 (XX) XXX-XX-XX" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="space-y-2">
-                  <Label htmlFor="position">Должность ответственного лица</Label>
-                  <Input id="position" placeholder="Директор" className="material-input" />
-                </div>
+                    <FormField
+                      control={companyForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email организации</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" placeholder="info@company.com" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="col-span-2 space-y-2">
-                  <Label htmlFor="bankDetails">Реквизиты</Label>
-                  <textarea id="bankDetails" className="material-input w-full h-24 resize-none" placeholder="Банковские реквизиты организации..." />
-                </div>
+                    <FormField
+                      control={companyForm.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Адрес</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="г. Минск, ул. Примерная, д. 1, оф. 1" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="space-y-2">
-                  <Label htmlFor="authorities">Полномочия ответственного лица</Label>
-                  <Input id="authorities" placeholder="на основании устава" className="material-input" />
-                </div>
+                    <FormField
+                      control={companyForm.control}
+                      name="taxId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>УНП</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="123456789" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="space-y-2">
-                  <Label htmlFor="nameGenitive">ФИО в родительном падеже</Label>
-                  <Input id="nameGenitive" placeholder="Иванова Ивана Ивановича" className="material-input" />
-                </div>
-              </div>
-              
-              <div className="flex gap-3 pt-4">
-                <Button className="material-button">
-                  <Save className="w-4 h-4 mr-2" />
-                  Сохранить настройки организации
-                </Button>
-              </div>
-            </TabsContent>
+                    <FormField
+                      control={companyForm.control}
+                      name="registrationNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Регистрационный номер</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Номер в торговом реестре" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-            <TabsContent value="templates" className="space-y-6 mt-6">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Стандартные шаблоны</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {['Контракт общая стоимость', 'Контракт стоимость за единицу', 'Акт общая стоимость', 'Акт стоимость за единицу'].map(template => <div key={template} className="floating-card p-4 rounded-2xl">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{template}</span>
-                          <Button variant="outline" size="sm">
-                            <Upload className="w-4 h-4 mr-2" />
-                            Загрузить
-                          </Button>
-                        </div>
-                      </div>)}
+                    <FormField
+                      control={companyForm.control}
+                      name="bankName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Название банка</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="ОАО 'Беларусбанк'" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={companyForm.control}
+                      name="bankAccount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Расчетный счет</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="BY12345678901234567890" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={companyForm.control}
+                      name="bankRouting"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>БИК банка</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="AKBBBY2X" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={companyForm.control}
+                      name="website"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Веб-сайт</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://company.com" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Пользовательские шаблоны</h3>
-                  <div className="floating-card p-6 rounded-2xl">
-                    <div className="text-center py-8">
-                      <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-lg font-medium mb-2">Загрузите пользовательский шаблон</p>
-                      <p className="text-muted-foreground mb-4">Поддерживаются файлы .docx</p>
-                      <div className="flex gap-3 justify-center">
-                        <Input type="text" placeholder="Название шаблона" className="material-input max-w-xs" />
-                        <Button className="material-button">
-                          <Upload className="w-4 h-4 mr-2" />
-                          Выбрать файл
-                        </Button>
-                      </div>
-                    </div>
+                  
+                  <div className="flex gap-3 pt-4">
+                    <Button type="submit" disabled={isSavingCompany || isLoadingCompany}>
+                      <Save className="w-4 h-4 mr-2" />
+                      {isSavingCompany ? 'Сохранение...' : 'Сохранить настройки организации'}
+                    </Button>
                   </div>
-
-                  {/* Example user templates */}
-                  <div className="space-y-3 mt-4">
-                    {['Спецификация оборудования', 'Техническое задание'].map(template => <div key={template} className="floating-card p-4 rounded-2xl">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{template}</span>
-                          <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>)}
-                  </div>
-                </div>
-              </div>
+                </form>
+              </Form>
             </TabsContent>
           </Tabs>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
