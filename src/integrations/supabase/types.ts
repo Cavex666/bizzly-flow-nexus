@@ -82,85 +82,49 @@ export type Database = {
       }
       company_settings: {
         Row: {
-          act_prefix: string | null
-          address: string | null
-          bank_account: string | null
-          bank_name: string | null
-          bank_routing: string | null
+          bank_details: string | null
           company_name: string | null
           contact_person_authorities: string | null
-          contact_person_authorities_prepositional: string | null
           contact_person_name: string | null
           contact_person_name_genitive: string | null
           contact_person_position: string | null
-          contact_person_position_genitive: string | null
-          contract_prefix: string | null
+          country: string | null
           created_at: string
-          document_prefix: string | null
           email: string | null
           id: string
-          legal_name: string | null
-          logo_url: string | null
           phone: string | null
-          registration_number: string | null
-          tax_id: string | null
           updated_at: string
           user_id: string
-          website: string | null
         }
         Insert: {
-          act_prefix?: string | null
-          address?: string | null
-          bank_account?: string | null
-          bank_name?: string | null
-          bank_routing?: string | null
+          bank_details?: string | null
           company_name?: string | null
           contact_person_authorities?: string | null
-          contact_person_authorities_prepositional?: string | null
           contact_person_name?: string | null
           contact_person_name_genitive?: string | null
           contact_person_position?: string | null
-          contact_person_position_genitive?: string | null
-          contract_prefix?: string | null
+          country?: string | null
           created_at?: string
-          document_prefix?: string | null
           email?: string | null
           id?: string
-          legal_name?: string | null
-          logo_url?: string | null
           phone?: string | null
-          registration_number?: string | null
-          tax_id?: string | null
           updated_at?: string
           user_id: string
-          website?: string | null
         }
         Update: {
-          act_prefix?: string | null
-          address?: string | null
-          bank_account?: string | null
-          bank_name?: string | null
-          bank_routing?: string | null
+          bank_details?: string | null
           company_name?: string | null
           contact_person_authorities?: string | null
-          contact_person_authorities_prepositional?: string | null
           contact_person_name?: string | null
           contact_person_name_genitive?: string | null
           contact_person_position?: string | null
-          contact_person_position_genitive?: string | null
-          contract_prefix?: string | null
+          country?: string | null
           created_at?: string
-          document_prefix?: string | null
           email?: string | null
           id?: string
-          legal_name?: string | null
-          logo_url?: string | null
           phone?: string | null
-          registration_number?: string | null
-          tax_id?: string | null
           updated_at?: string
           user_id?: string
-          website?: string | null
         }
         Relationships: []
       }

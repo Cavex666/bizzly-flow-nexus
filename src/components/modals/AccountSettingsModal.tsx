@@ -22,22 +22,15 @@ const profileSchema = z.object({
 
 const companySchema = z.object({
   companyName: z.string().optional(),
-  legalName: z.string().optional(),
-  contactPersonName: z.string().optional(),
-  contactPersonPosition: z.string().optional(),
-  contactPersonAuthorities: z.string().optional(),
-  contactPersonNameGenitive: z.string().optional(),
-  contactPersonPositionGenitive: z.string().optional(),
-  contactPersonAuthoritiesPrepositional: z.string().optional(),
+  contactPerson: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
-  address: z.string().optional(),
-  taxId: z.string().optional(),
-  registrationNumber: z.string().optional(),
-  bankName: z.string().optional(),
-  bankAccount: z.string().optional(),
-  bankRouting: z.string().optional(),
-  website: z.string().optional(),
+  country: z.string().optional(),
+  bankDetails: z.string().optional(),
+  contactPersonPosition: z.string().optional(),
+  contactPersonAuthorities: z.string().optional(),
+  contactPersonName: z.string().optional(),
+  contactPersonNameGenitive: z.string().optional(),
 });
 
 interface AccountSettingsModalProps {
@@ -68,22 +61,15 @@ export const AccountSettingsModal = ({
     resolver: zodResolver(companySchema),
     defaultValues: {
       companyName: '',
-      legalName: '',
-      contactPersonName: '',
-      contactPersonPosition: '',
-      contactPersonAuthorities: '',
-      contactPersonNameGenitive: '',
-      contactPersonPositionGenitive: '',
-      contactPersonAuthoritiesPrepositional: '',
+      contactPerson: '',
       phone: '',
       email: '',
-      address: '',
-      taxId: '',
-      registrationNumber: '',
-      bankName: '',
-      bankAccount: '',
-      bankRouting: '',
-      website: '',
+      country: 'Беларусь',
+      bankDetails: '',
+      contactPersonPosition: 'Директор',
+      contactPersonAuthorities: '',
+      contactPersonName: '',
+      contactPersonNameGenitive: '',
     },
   });
 
@@ -130,22 +116,15 @@ export const AccountSettingsModal = ({
       if (data) {
         companyForm.reset({
           companyName: data.company_name || '',
-          legalName: data.legal_name || '',
-          contactPersonName: data.contact_person_name || '',
-          contactPersonPosition: data.contact_person_position || '',
-          contactPersonAuthorities: data.contact_person_authorities || '',
-          contactPersonNameGenitive: data.contact_person_name_genitive || '',
-          contactPersonPositionGenitive: data.contact_person_position_genitive || '',
-          contactPersonAuthoritiesPrepositional: data.contact_person_authorities_prepositional || '',
+          contactPerson: data.contact_person || '',
           phone: data.phone || '',
           email: data.email || '',
-          address: data.address || '',
-          taxId: data.tax_id || '',
-          registrationNumber: data.registration_number || '',
-          bankName: data.bank_name || '',
-          bankAccount: data.bank_account || '',
-          bankRouting: data.bank_routing || '',
-          website: data.website || '',
+          country: data.country || 'Беларусь',
+          bankDetails: data.bank_details || '',
+          contactPersonPosition: data.contact_person_position || 'Директор',
+          contactPersonAuthorities: data.contact_person_authorities || '',
+          contactPersonName: data.contact_person_name || '',
+          contactPersonNameGenitive: data.contact_person_name_genitive || '',
         });
       }
     } catch (error) {
@@ -225,22 +204,15 @@ export const AccountSettingsModal = ({
           .from('company_settings')
           .update({
             company_name: data.companyName,
-            legal_name: data.legalName,
-            contact_person_name: data.contactPersonName,
-            contact_person_position: data.contactPersonPosition,
-            contact_person_authorities: data.contactPersonAuthorities,
-            contact_person_name_genitive: data.contactPersonNameGenitive,
-            contact_person_position_genitive: data.contactPersonPositionGenitive,
-            contact_person_authorities_prepositional: data.contactPersonAuthoritiesPrepositional,
+            contact_person: data.contactPerson,
             phone: data.phone,
             email: data.email,
-            address: data.address,
-            tax_id: data.taxId,
-            registration_number: data.registrationNumber,
-            bank_name: data.bankName,
-            bank_account: data.bankAccount,
-            bank_routing: data.bankRouting,
-            website: data.website,
+            country: data.country,
+            bank_details: data.bankDetails,
+            contact_person_position: data.contactPersonPosition,
+            contact_person_authorities: data.contactPersonAuthorities,
+            contact_person_name: data.contactPersonName,
+            contact_person_name_genitive: data.contactPersonNameGenitive,
           })
           .eq('user_id', user.id);
       } else {
@@ -250,22 +222,15 @@ export const AccountSettingsModal = ({
           .insert({
             user_id: user.id,
             company_name: data.companyName,
-            legal_name: data.legalName,
-            contact_person_name: data.contactPersonName,
-            contact_person_position: data.contactPersonPosition,
-            contact_person_authorities: data.contactPersonAuthorities,
-            contact_person_name_genitive: data.contactPersonNameGenitive,
-            contact_person_position_genitive: data.contactPersonPositionGenitive,
-            contact_person_authorities_prepositional: data.contactPersonAuthoritiesPrepositional,
+            contact_person: data.contactPerson,
             phone: data.phone,
             email: data.email,
-            address: data.address,
-            tax_id: data.taxId,
-            registration_number: data.registrationNumber,
-            bank_name: data.bankName,
-            bank_account: data.bankAccount,
-            bank_routing: data.bankRouting,
-            website: data.website,
+            country: data.country,
+            bank_details: data.bankDetails,
+            contact_person_position: data.contactPersonPosition,
+            contact_person_authorities: data.contactPersonAuthorities,
+            contact_person_name: data.contactPersonName,
+            contact_person_name_genitive: data.contactPersonNameGenitive,
           });
       }
 
@@ -293,7 +258,7 @@ export const AccountSettingsModal = ({
 
   return (
     <div className="modal-overlay fade-in" onClick={handleOverlayClick}>
-      <div className="modal-content slide-up w-full max-w-4xl h-auto min-h-[600px] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content slide-up w-full max-w-3xl h-auto min-h-[500px] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-2xl font-bold">Настройки аккаунта</h2>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-primary/10 transition-colors">
@@ -308,7 +273,7 @@ export const AccountSettingsModal = ({
               <TabsTrigger value="company">Организация</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="account" className="space-y-6 mt-6 min-h-[500px]">
+            <TabsContent value="account" className="space-y-6 mt-6 min-h-[400px]">
               <Form {...profileForm}>
                 <form onSubmit={profileForm.handleSubmit(handleProfileSave)} className="space-y-6">
                   <div className="grid grid-cols-2 gap-6">
@@ -383,7 +348,7 @@ export const AccountSettingsModal = ({
               </Form>
             </TabsContent>
 
-            <TabsContent value="company" className="space-y-6 mt-6 min-h-[500px]">
+            <TabsContent value="company" className="space-y-6 mt-6 min-h-[400px]">
               <Form {...companyForm}>
                 <form onSubmit={companyForm.handleSubmit(handleCompanySave)} className="space-y-6">
                   <div className="grid grid-cols-2 gap-6">
@@ -403,166 +368,12 @@ export const AccountSettingsModal = ({
                     
                     <FormField
                       control={companyForm.control}
-                      name="legalName"
+                      name="contactPerson"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Полное юридическое название</FormLabel>
+                          <FormLabel>Контактное лицо</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder='Общество с ограниченной ответственностью "Биззли Бай"' />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="contactPersonName"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>ФИО ответственного лица</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="Иванов Иван Иванович" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="contactPersonPosition"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>Должность ответственного лица</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="Директор" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="contactPersonAuthorities"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>Полномочия ответственного лица</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="действующий на основании Устава" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="contactPersonNameGenitive"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>ФИО ответственного лица (Р.п.)</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="Иванова Ивана Ивановича" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="contactPersonPositionGenitive"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>Должность ответственного лица (Р.п.)</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="директора" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="contactPersonAuthoritiesPrepositional"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>Полномочия (П.п.)</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="действующего на основании Устава" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="phone"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>Номер телефона</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="+375 (XX) XXX-XX-XX" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="email"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>Email организации</FormLabel>
-                           <FormControl>
-                             <Input {...field} type="email" placeholder="info@company.com" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="address"
-                       render={({ field }) => (
-                         <FormItem className="col-span-2">
-                           <FormLabel>Адрес</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="г. Минск, ул. Примерная, д. 1, оф. 1" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                     <FormField
-                       control={companyForm.control}
-                       name="taxId"
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormLabel>УНП</FormLabel>
-                           <FormControl>
-                             <Input {...field} placeholder="123456789" />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-
-                    <FormField
-                      control={companyForm.control}
-                      name="registrationNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Регистрационный номер</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="Номер в торговом реестре" />
+                            <Input {...field} placeholder="Иван Иванов" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -571,12 +382,12 @@ export const AccountSettingsModal = ({
 
                     <FormField
                       control={companyForm.control}
-                      name="bankName"
+                      name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Название банка</FormLabel>
+                          <FormLabel>Номер телефона</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="ОАО 'Беларусбанк'" />
+                            <Input {...field} placeholder="+375 (XX) XXX-XX-XX" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -585,12 +396,12 @@ export const AccountSettingsModal = ({
 
                     <FormField
                       control={companyForm.control}
-                      name="bankAccount"
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Расчетный счет</FormLabel>
+                          <FormLabel>E-mail</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="BY12345678901234567890" />
+                            <Input {...field} type="email" placeholder="info@company.com" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -599,12 +410,25 @@ export const AccountSettingsModal = ({
 
                     <FormField
                       control={companyForm.control}
-                      name="bankRouting"
+                      name="country"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>БИК банка</FormLabel>
+                          <FormLabel>Страна</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="AKBBBY2X" />
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Выберите страну" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Беларусь">Беларусь</SelectItem>
+                                <SelectItem value="Россия">Россия</SelectItem>
+                                <SelectItem value="Украина">Украина</SelectItem>
+                                <SelectItem value="Казахстан">Казахстан</SelectItem>
+                                <SelectItem value="Польша">Польша</SelectItem>
+                                <SelectItem value="Литва">Литва</SelectItem>
+                                <SelectItem value="Латвия">Латвия</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -613,12 +437,68 @@ export const AccountSettingsModal = ({
 
                     <FormField
                       control={companyForm.control}
-                      name="website"
+                      name="contactPersonPosition"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Веб-сайт</FormLabel>
+                          <FormLabel>Должность ответственного лица</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="https://company.com" />
+                            <Input {...field} placeholder="Директор" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={companyForm.control}
+                      name="bankDetails"
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Реквизиты</FormLabel>
+                          <FormControl>
+                            <Textarea {...field} placeholder="Банковские реквизиты организации" className="resize-none" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={companyForm.control}
+                      name="contactPersonAuthorities"
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Полномочия ответственного лица</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="на основании устава / свидетельства" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={companyForm.control}
+                      name="contactPersonName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ФИО ответственного лица (И.п.)</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Иванов Иван Иванович" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={companyForm.control}
+                      name="contactPersonNameGenitive"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ФИО ответственного лица (Р.п.)</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Иванова Ивана Ивановича" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
