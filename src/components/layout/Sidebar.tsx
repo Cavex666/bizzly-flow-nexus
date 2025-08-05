@@ -27,11 +27,21 @@ const menuItems = [{
   icon: FileText,
   label: 'Документы'
 }];
-export const Sidebar = () => {
+interface SidebarProps {
+  onCollapsedChange?: (collapsed: boolean) => void;
+}
+
+export const Sidebar = ({ onCollapsedChange }: SidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-  return <div className={cn("bg-white/90 backdrop-blur-xl border-r border-border/50 shadow-xl transition-all duration-300", collapsed ? "w-16" : "w-64")}>
-      <div className={cn("p-4", collapsed && "px-2")}>
+
+  const handleToggleCollapse = () => {
+    const newCollapsed = !collapsed;
+    setCollapsed(newCollapsed);
+    onCollapsedChange?.(newCollapsed);
+  };
+  return <div className={cn("bg-white/90 backdrop-blur-xl border-r border-border/50 shadow-xl transition-all duration-300 h-screen overflow-hidden flex flex-col", collapsed ? "w-16" : "w-64")}>
+      <div className={cn("p-4 flex-1", collapsed && "px-2")}>
         {/* Logo */}
         <div className={cn("flex items-center gap-3 mb-8", collapsed && "justify-center")}>
           <div className="w-10 h-10 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-xl bg-slate-950">
@@ -70,16 +80,25 @@ export const Sidebar = () => {
               </NavLink>;
         })}
         </nav>
+      </div>
 
-        {/* Collapse Toggle */}
+      {/* Collapse Toggle - at bottom */}
+      <div className="p-4">
         <button 
-          onClick={() => setCollapsed(!collapsed)} 
+          onClick={handleToggleCollapse} 
           className={cn(
-            "mt-8 flex items-center justify-center p-2 rounded-xl hover:bg-primary/10 transition-colors",
-            collapsed ? "w-10 h-10 mx-auto" : "w-full"
+            "flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/10 transition-all duration-200 w-full justify-center",
+            collapsed && "justify-center"
           )}
         >
-          {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+          {collapsed ? (
+            <ChevronRight className="w-5 h-5" />
+          ) : (
+            <>
+              <ChevronLeft className="w-5 h-5" />
+              <span className="font-medium">Свернуть</span>
+            </>
+          )}
         </button>
       </div>
     </div>;

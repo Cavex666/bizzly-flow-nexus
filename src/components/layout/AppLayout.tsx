@@ -13,6 +13,7 @@ interface AppLayoutProps {
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -55,16 +56,16 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   // Show layout only for authenticated pages
   if (user && location.pathname !== '/' && location.pathname !== '/auth') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-        <div className="flex">
-          <Sidebar />
-          <div className="flex-1 flex flex-col min-h-screen">
-            <Header user={user} />
-            <main className="flex-1 p-6 pb-20">
-              {children}
-            </main>
-            <Footer />
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex">
+        <div className="fixed left-0 top-0 h-full z-30">
+          <Sidebar onCollapsedChange={setSidebarCollapsed} />
+        </div>
+        <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+          <Header user={user} />
+          <main className="flex-1 p-6 pb-20">
+            {children}
+          </main>
+          <Footer />
         </div>
       </div>
     );

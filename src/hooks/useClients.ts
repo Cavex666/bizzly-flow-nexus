@@ -68,5 +68,22 @@ export const useClients = () => {
     };
   }, []);
 
-  return { clients, loading, refetch: loadClients };
+  const deleteClient = async (clientId: string) => {
+    try {
+      const { error } = await supabase
+        .from('clients')
+        .delete()
+        .eq('id', clientId);
+
+      if (error) {
+        throw error;
+      }
+
+      await loadClients();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  return { clients, loading, refetch: loadClients, deleteClient };
 };

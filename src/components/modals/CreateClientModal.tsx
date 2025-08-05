@@ -45,25 +45,26 @@ type ClientFormData = z.infer<typeof clientSchema>;
 
 interface CreateClientModalProps {
   onClose: () => void;
+  client?: any;
 }
 
-export const CreateClientModal = ({ onClose }: CreateClientModalProps) => {
+export const CreateClientModal = ({ onClose, client }: CreateClientModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
-      companyName: '',
-      contactPerson: '',
-      phoneCountryCode: '+375',
-      phoneNumber: '',
-      email: '',
-      country: 'Беларусь',
-      bankDetails: '',
-      contactPersonPosition: '',
-      contactPersonAuthorities: '',
-      contactPersonName: '',
-      contactPersonNameGenitive: '',
+      companyName: client?.company_name || '',
+      contactPerson: client?.contact_person || '',
+      phoneCountryCode: client?.phone ? client.phone.split(/\d/)[0] || '+375' : '+375',
+      phoneNumber: client?.phone ? client.phone.replace(/^\+\d+/, '') : '',
+      email: client?.email || '',
+      country: client?.country || 'Беларусь',
+      bankDetails: client?.bank_details || '',
+      contactPersonPosition: client?.contact_person_position || '',
+      contactPersonAuthorities: client?.contact_person_authorities || '',
+      contactPersonName: client?.contact_person_name || '',
+      contactPersonNameGenitive: client?.contact_person_name_genitive || '',
     },
   });
 
@@ -94,26 +95,53 @@ export const CreateClientModal = ({ onClose }: CreateClientModalProps) => {
 
       const fullPhoneNumber = `${data.phoneCountryCode}${data.phoneNumber}`;
 
-      const { error } = await supabase.from('clients').insert({
-        company_name: data.companyName,
-        contact_person: data.contactPerson,
-        phone: fullPhoneNumber,
-        email: data.email,
-        country: data.country,
-        bank_details: data.bankDetails,
-        contact_person_position: data.contactPersonPosition,
-        contact_person_authorities: data.contactPersonAuthorities,
-        contact_person_name: data.contactPersonName,
-        contact_person_name_genitive: data.contactPersonNameGenitive,
-        user_id: user.id,
-      });
+      if (client) {
+        // Update existing client
+        const { error } = await supabase
+          .from('clients')
+          .update({
+            company_name: data.companyName,
+            contact_person: data.contactPerson,
+            phone: fullPhoneNumber,
+            email: data.email,
+            country: data.country,
+            bank_details: data.bankDetails,
+            contact_person_position: data.contactPersonPosition,
+            contact_person_authorities: data.contactPersonAuthorities,
+            contact_person_name: data.contactPersonName,
+            contact_person_name_genitive: data.contactPersonNameGenitive,
+          })
+          .eq('id', client.id);
 
-      if (error) {
-        toast({ title: 'Ошибка', description: 'Не удалось создать клиента' });
-        return;
+        if (error) {
+          toast({ title: 'Ошибка', description: 'Не удалось обновить клиента' });
+          return;
+        }
+
+        toast({ title: 'Успех', description: 'Клиент успешно обновлен' });
+      } else {
+        // Create new client
+        const { error } = await supabase.from('clients').insert({
+          company_name: data.companyName,
+          contact_person: data.contactPerson,
+          phone: fullPhoneNumber,
+          email: data.email,
+          country: data.country,
+          bank_details: data.bankDetails,
+          contact_person_position: data.contactPersonPosition,
+          contact_person_authorities: data.contactPersonAuthorities,
+          contact_person_name: data.contactPersonName,
+          contact_person_name_genitive: data.contactPersonNameGenitive,
+          user_id: user.id,
+        });
+
+        if (error) {
+          toast({ title: 'Ошибка', description: 'Не удалось создать клиента' });
+          return;
+        }
+
+        toast({ title: 'Успех', description: 'Клиент успешно создан' });
       }
-
-      toast({ title: 'Успех', description: 'Клиент успешно создан' });
       onClose();
     } catch (error) {
       toast({ title: 'Ошибка', description: 'Произошла ошибка при создании клиента' });
@@ -128,7 +156,7 @@ export const CreateClientModal = ({ onClose }: CreateClientModalProps) => {
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="flex items-center gap-3">
             <Users className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold">Добавить клиента</h2>
+            <h2 className="text-2xl font-bold">{client ? 'Редактировать клиента' : 'Добавить клиента'}</h2>
           </div>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-primary/10">
             <X className="w-5 h-5" />
@@ -346,7 +374,7 @@ export const CreateClientModal = ({ onClose }: CreateClientModalProps) => {
                 Отмена
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Создание...' : 'Создать клиента'}
+                {isSubmitting ? (client ? 'Сохранение...' : 'Создание...') : (client ? 'Сохранить изменения' : 'Создать клиента')}
               </Button>
             </div>
           </form>

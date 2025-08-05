@@ -71,14 +71,14 @@ export const ClientsList = ({
             onClick={() => onClientSelect(selectedClient === client.id ? null : client.id)}
           >
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-gradient-secondary rounded-lg flex items-center justify-center flex-shrink-0">
-                <Users className="w-4 h-4 text-white" />
+              <div className="w-6 h-6 bg-primary/20 rounded-md flex items-center justify-center flex-shrink-0">
+                <Users className="w-3 h-3 text-primary" />
               </div>
               
               <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start justify-between mb-1">
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-sm mb-1 truncate">{client.company_name}</h4>
+                    <h4 className="font-semibold text-xs mb-0.5 truncate">{client.company_name}</h4>
                     <p className="text-xs text-muted-foreground">{client.contact_person}</p>
                   </div>
                   <DropdownMenu>
@@ -86,10 +86,10 @@ export const ClientsList = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-6 w-6 p-0"
+                        className="h-5 w-5 p-0"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <MoreVertical className="w-3 h-3" />
+                        <MoreVertical className="w-2.5 h-2.5" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-32">
@@ -98,7 +98,7 @@ export const ClientsList = ({
                           e.stopPropagation();
                           onClientEdit(client);
                         }}>
-                          <Edit className="w-4 h-4 mr-2" />
+                          <Edit className="w-3 h-3 mr-2" />
                           Редактировать
                         </DropdownMenuItem>
                       )}
@@ -110,7 +110,7 @@ export const ClientsList = ({
                           }}
                           className="text-destructive focus:text-destructive"
                         >
-                          <Trash2 className="w-4 h-4 mr-2" />
+                          <Trash2 className="w-3 h-3 mr-2" />
                           Удалить
                         </DropdownMenuItem>
                       )}
@@ -118,31 +118,31 @@ export const ClientsList = ({
                   </DropdownMenu>
                 </div>
                 
-                <div className="space-y-1 mb-2">
+                <div className="space-y-0.5 mb-1">
                   {client.phone && (
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Phone className="w-3 h-3" />
+                      <Phone className="w-2.5 h-2.5" />
                       <span className="truncate">{client.phone}</span>
                     </div>
                   )}
                   
                   {client.email && (
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Mail className="w-3 h-3" />
+                      <Mail className="w-2.5 h-2.5" />
                       <span className="truncate">{client.email}</span>
                     </div>
                   )}
                   
                   {client.country && (
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <MapPin className="w-3 h-3" />
+                      <MapPin className="w-2.5 h-2.5" />
                       <span>{client.country}</span>
                     </div>
                   )}
                 </div>
                 
                 <div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  <span className={`text-xs px-1.5 py-0.5 rounded-full ${
                     activeProjectsCount > 0 
                       ? 'bg-success/10 text-success' 
                       : 'bg-muted text-muted-foreground'

@@ -11,6 +11,7 @@ import { CreateClientModal } from '../components/modals/CreateClientModal';
 import { CalendarEditorModal } from '../components/modals/CalendarEditorModal';
 import { ProjectViewModal } from '../components/modals/ProjectViewModal';
 import { useProjects } from '../hooks/useProjects';
+import { useClients } from '../hooks/useClients';
 import { toast } from '@/hooks/use-toast';
 
 export const DashboardPage = () => {
@@ -19,6 +20,7 @@ export const DashboardPage = () => {
   const [showCalendarEditor, setShowCalendarEditor] = useState(false);
   const [showProjectView, setShowProjectView] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
+  const [editingClient, setEditingClient] = useState<any>(null);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [viewingProject, setViewingProject] = useState<any>(null);
@@ -26,6 +28,7 @@ export const DashboardPage = () => {
   const [projectSearchQuery, setProjectSearchQuery] = useState('');
   
   const { deleteProject } = useProjects();
+  const { deleteClient } = useClients();
 
   const handleProjectEdit = (project: any) => {
     setEditingProject(project);
@@ -49,9 +52,36 @@ export const DashboardPage = () => {
     }
   };
 
+  const handleClientEdit = (client: any) => {
+    setEditingClient(client);
+    setShowCreateClient(true);
+  };
+
+  const handleClientDelete = async (client: any) => {
+    if (window.confirm(`Вы уверены, что хотите удалить клиента "${client.company_name}"?`)) {
+      try {
+        await deleteClient(client.id);
+        toast({
+          title: 'Успех',
+          description: 'Клиент успешно удален'
+        });
+      } catch (error) {
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось удалить клиента'
+        });
+      }
+    }
+  };
+
   const handleCloseCreateProject = () => {
     setShowCreateProject(false);
     setEditingProject(null);
+  };
+
+  const handleCloseCreateClient = () => {
+    setShowCreateClient(false);
+    setEditingClient(null);
   };
 
   return (
@@ -121,11 +151,13 @@ export const DashboardPage = () => {
             </div>
             
             <div className="flex-1">
-              <ClientsList
-                onClientSelect={setSelectedClient}
-                selectedClient={selectedClient}
-                searchQuery={clientSearchQuery}
-              />
+                <ClientsList
+                  onClientSelect={setSelectedClient}
+                  selectedClient={selectedClient}
+                  searchQuery={clientSearchQuery}
+                  onClientEdit={handleClientEdit}
+                  onClientDelete={handleClientDelete}
+                />
             </div>
           </div>
         </div>
@@ -201,7 +233,10 @@ export const DashboardPage = () => {
       )}
       
       {showCreateClient && (
-        <CreateClientModal onClose={() => setShowCreateClient(false)} />
+        <CreateClientModal 
+          onClose={handleCloseCreateClient} 
+          client={editingClient}
+        />
       )}
       
       {showCalendarEditor && (

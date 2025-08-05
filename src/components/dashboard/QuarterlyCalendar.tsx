@@ -89,7 +89,17 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
       const startDate = new Date(project.start_date);
       const endDate = new Date(project.end_date);
       
-      return currentDate >= startDate && currentDate <= endDate;
+      // Check if current date is within project range
+      if (currentDate < startDate || currentDate > endDate) return false;
+      
+      // If work_days_type is 'working', exclude weekends
+      if (project.work_days_type === 'working') {
+        const dayOfWeek = currentDate.getDay();
+        return dayOfWeek !== 0 && dayOfWeek !== 6; // Exclude Sunday (0) and Saturday (6)
+      }
+      
+      // If work_days_type is 'calendar', include all days
+      return true;
     });
   };
 
@@ -142,7 +152,9 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
           ))}
         </div>
         <div className="grid grid-cols-7 gap-1">
-          {days}
+          {days.map((day, index) => (
+            <div key={`day-${index}`}>{day}</div>
+          ))}
         </div>
       </div>
     );
@@ -197,7 +209,7 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-secondary/20 border border-secondary rounded-full"></div>
-          <span>Рабочие дни проекта</span>
+          <span>Дни проекта (рабочие/календарные в зависимости от настроек)</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-muted rounded-full"></div>

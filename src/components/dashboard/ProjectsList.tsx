@@ -166,24 +166,24 @@ export const ProjectsList = ({
           return (
             <div
               key={project.id}
-              className={`bg-card border border-border rounded-lg p-3 cursor-pointer transition-all duration-300 hover:border-primary/50 ${
+              className={`bg-card border border-border rounded-lg p-2 cursor-pointer transition-all duration-300 hover:border-primary/50 ${
                 selectedProject === project.id 
                   ? 'border-primary bg-primary/5' 
                   : ''
               }`}
               onClick={() => onProjectSelect(selectedProject === project.id ? null : project.id)}
             >
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                  <FolderOpen className="w-4 h-4 text-white" />
+              <div className="flex items-start gap-2">
+                <div className="w-6 h-6 bg-primary/20 rounded-md flex items-center justify-center flex-shrink-0">
+                  <FolderOpen className="w-3 h-3 text-primary" />
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-start justify-between mb-1">
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm mb-1 truncate">{project.name}</h4>
+                      <h4 className="font-semibold text-xs mb-0.5 truncate">{project.name}</h4>
                       <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <User className="w-3 h-3" />
+                        <User className="w-2.5 h-2.5" />
                         <span className="truncate">{clientName}</span>
                       </p>
                     </div>
@@ -192,13 +192,13 @@ export const ProjectsList = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-6 w-6 p-0"
+                          className="h-5 w-5 p-0"
                           onClick={(e) => {
                             e.stopPropagation();
                             onProjectView(project);
                           }}
                         >
-                          <Eye className="w-3 h-3" />
+                          <Eye className="w-2.5 h-2.5" />
                         </Button>
                       )}
                       <DropdownMenu>
@@ -206,10 +206,10 @@ export const ProjectsList = ({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-6 w-6 p-0"
+                            className="h-5 w-5 p-0"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <MoreVertical className="w-3 h-3" />
+                            <MoreVertical className="w-2.5 h-2.5" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-32">
@@ -218,7 +218,7 @@ export const ProjectsList = ({
                               e.stopPropagation();
                               onProjectEdit(project);
                             }}>
-                              <Edit className="w-4 h-4 mr-2" />
+                              <Edit className="w-3 h-3 mr-2" />
                               Редактировать
                             </DropdownMenuItem>
                           )}
@@ -230,7 +230,7 @@ export const ProjectsList = ({
                               }}
                               className="text-destructive focus:text-destructive"
                             >
-                              <Trash2 className="w-4 h-4 mr-2" />
+                              <Trash2 className="w-3 h-3 mr-2" />
                               Удалить
                             </DropdownMenuItem>
                           )}
@@ -240,9 +240,9 @@ export const ProjectsList = ({
                   </div>
 
                   {/* Progress Bar and Status */}
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(project.status)}`}>
+                      <span className={`text-xs px-1.5 py-0.5 rounded-full ${getStatusColor(project.status)}`}>
                         {getStatusText(project.status)}
                       </span>
                       <div className="text-xs text-muted-foreground">
@@ -250,8 +250,8 @@ export const ProjectsList = ({
                       </div>
                     </div>
                     
-                    <div className="space-y-1">
-                      <Progress value={dateProgress} className="h-2" />
+                    <div className="space-y-0.5">
+                      <Progress value={dateProgress} className="h-1.5" />
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span>Прогресс: {dateProgress}%</span>
                         <span>{project.budget?.toLocaleString()} {project.currency}</span>
