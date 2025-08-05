@@ -146,6 +146,7 @@ export const DashboardPage = () => {
               <ProjectsList
                 onProjectSelect={setSelectedProject}
                 selectedProject={selectedProject}
+                selectedClientId={selectedClient}
                 onProjectView={(project) => {
                   setViewingProject(project);
                   setShowProjectView(true);

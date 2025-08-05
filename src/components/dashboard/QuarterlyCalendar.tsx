@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useProjects } from '@/hooks/useProjects';
+import { useClients } from '@/hooks/useClients';
 
 interface QuarterlyCalendarProps {
   selectedProject: string | null;
@@ -10,6 +12,8 @@ interface QuarterlyCalendarProps {
 export const QuarterlyCalendar = ({ selectedProject, selectedClient }: QuarterlyCalendarProps) => {
   const [currentQuarter, setCurrentQuarter] = useState(1);
   const [currentYear, setCurrentYear] = useState(2024);
+  const { projects } = useProjects();
+  const { clients } = useClients();
 
   const quarters = [
     { name: 'Q1', months: ['Январь', 'Февраль', 'Март'] },
@@ -63,11 +67,28 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
   };
 
   const isProjectDay = (day: number, month: number) => {
-    // Mock project days - in real app, this would check actual project dates
+    const currentDate = new Date(currentYear, month - 1, day);
+    
+    let relevantProjects = projects;
+    
+    // Filter by selected project
     if (selectedProject) {
-      return Math.random() > 0.7; // Random project days for demo
+      relevantProjects = projects.filter(p => p.id === selectedProject);
     }
-    return false;
+    // Filter by selected client
+    else if (selectedClient) {
+      relevantProjects = projects.filter(p => p.client_id === selectedClient);
+    }
+    
+    // Check if current date is within any project's date range
+    return relevantProjects.some(project => {
+      if (!project.start_date || !project.end_date) return false;
+      
+      const startDate = new Date(project.start_date);
+      const endDate = new Date(project.end_date);
+      
+      return currentDate >= startDate && currentDate <= endDate;
+    });
   };
 
   const renderMonth = (monthName: string, monthIndex: number) => {
@@ -136,8 +157,14 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
             {currentQuarterData.name} {currentYear}
           </h3>
           <p className="text-sm text-muted-foreground">
-            {selectedProject && `Проект: ${selectedProject}`}
-            {selectedClient && `Клиент: ${selectedClient}`}
+            {selectedProject && (() => {
+              const project = projects.find(p => p.id === selectedProject);
+              return `Проект: ${project?.name || 'Неизвестный проект'}`;
+            })()}
+            {selectedClient && (() => {
+              const client = clients.find(c => c.id === selectedClient);
+              return `Клиент: ${client?.company_name || 'Неизвестный клиент'}`;
+            })()}
             {!selectedProject && !selectedClient && 'Выберите проект или клиента для отображения дат'}
           </p>
         </div>
