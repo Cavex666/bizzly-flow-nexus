@@ -144,37 +144,6 @@ export const ProjectsList = ({
                       <span className="truncate">{project.client}</span>
                     </p>
                   </div>
-                  
-                  <div className="flex items-center gap-2 ml-2">
-                    <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(project.status)}`}>
-                      {getStatusText(project.status)}
-                    </span>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="h-6 w-6 p-0"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // Добавить логику для меню
-                      }}
-                    >
-                      <MoreVertical className="w-3 h-3" />
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="mb-3">
-                  <div className="flex justify-between text-xs mb-2">
-                    <span>Прогресс</span>
-                    <span className="font-medium">{project.progress}%</span>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-2">
-                    <div
-                      className="bg-gradient-primary h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${project.progress}%` }}
-                    ></div>
-                  </div>
                 </div>
 
                 {/* Project Details */}
@@ -190,22 +159,17 @@ export const ProjectsList = ({
                       {project.workDaysType === 'working' ? 'Рабочие дни' : 'Календарные дни'}
                     </span>
                   </div>
+                  
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <span>Прогресс: {project.progress}%</span>
+                  </div>
                 </div>
 
-                {/* Action Button */}
-                <div className="mt-3 pt-3 border-t border-border">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full gap-2 text-xs"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onProjectView?.(project);
-                    }}
-                  >
-                    <Eye className="w-3 h-3" />
-                    Просмотр проекта
-                  </Button>
+                {/* Status Badge */}
+                <div className="mt-2">
+                  <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(project.status)}`}>
+                    {getStatusText(project.status)}
+                  </span>
                 </div>
               </div>
             </div>
