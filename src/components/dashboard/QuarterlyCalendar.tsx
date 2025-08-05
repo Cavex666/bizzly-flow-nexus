@@ -152,9 +152,7 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
           ))}
         </div>
         <div className="grid grid-cols-7 gap-1">
-          {days.map((day, index) => (
-            <div key={`day-${index}`}>{day}</div>
-          ))}
+          {days}
         </div>
       </div>
     );
@@ -219,9 +217,11 @@ export const QuarterlyCalendar = ({ selectedProject, selectedClient }: Quarterly
 
       {/* Calendar Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {currentQuarterData.months.map((month, index) => 
-          renderMonth(month, (currentQuarter - 1) * 3 + index)
-        )}
+        {currentQuarterData.months.map((month, index) => (
+          <div key={`month-${currentQuarter}-${index}`}>
+            {renderMonth(month, (currentQuarter - 1) * 3 + index)}
+          </div>
+        ))}
       </div>
     </div>
   );

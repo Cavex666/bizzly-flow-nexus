@@ -44,7 +44,7 @@ export const Sidebar = ({ onCollapsedChange }: SidebarProps) => {
       <div className={cn("p-4 flex-1", collapsed && "px-2")}>
         {/* Logo */}
         <div className={cn("flex items-center gap-3 mb-8", collapsed && "justify-center")}>
-          <div className="w-10 h-10 bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-xl bg-slate-950">
+          <div className={cn("bg-gradient-primary rounded-2xl flex items-center justify-center text-white font-bold text-xl bg-slate-950", collapsed ? "w-10 h-10" : "w-10 h-10")}>
             B
           </div>
           {!collapsed && <div className="fade-in">
