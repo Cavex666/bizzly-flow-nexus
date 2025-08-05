@@ -8,26 +8,26 @@
   :root {
     /* Material Expressive Color Palette */
     --background: 248 250 252;
-    --foreground: 226 232 240;
+    --foreground: 15 23 42;
     
     --card: 255 255 255;
-    --card-foreground: 71 85 105;
+    --card-foreground: 15 23 42;
     
     --popover: 255 255 255;
-    --popover-foreground: 71 85 105;
+    --popover-foreground: 15 23 42;
     
     --primary: 268 84% 64%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 255 255 255;
     --primary-light: 268 84% 75%;
     --primary-dark: 268 84% 45%;
     
     --secondary: 199 89% 48%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 255 255 255;
     --secondary-light: 199 89% 65%;
     --secondary-dark: 199 89% 35%;
     
     --accent: 45 93% 58%;
-    --accent-foreground: 0 0% 15%;
+    --accent-foreground: 15 23 42;
     --accent-light: 45 93% 75%;
     --accent-dark: 45 93% 45%;
     
