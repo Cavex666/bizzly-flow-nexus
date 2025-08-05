@@ -36,8 +36,8 @@ export const Header = ({
   };
   return <>
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-border/50 shadow-sm px-6 py-4 z-40">
-        <div className="flex items-center justify-between ml-64">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4 ml-64">
             <h2 className="text-2xl font-bold text-slate-950">
               Добро пожаловать в Bizzly
             </h2>
