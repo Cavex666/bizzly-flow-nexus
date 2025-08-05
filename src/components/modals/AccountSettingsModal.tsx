@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 const profileSchema = z.object({
   displayName: z.string().optional(),
   phone: z.string().optional(),
+  currency: z.string().min(1, 'Выберите валюту'),
 });
 
 const companySchema = z.object({
@@ -59,6 +60,7 @@ export const AccountSettingsModal = ({
     defaultValues: {
       displayName: '',
       phone: '',
+      currency: 'BYN',
     },
   });
 
@@ -102,6 +104,7 @@ export const AccountSettingsModal = ({
         profileForm.reset({
           displayName: data.display_name || '',
           phone: data.phone || '',
+          currency: data.currency || 'BYN',
         });
       }
     } catch (error) {
@@ -166,6 +169,7 @@ export const AccountSettingsModal = ({
           user_id: user.id,
           display_name: data.displayName,
           phone: data.phone,
+          currency: data.currency,
         });
 
       if (error) {
@@ -235,7 +239,7 @@ export const AccountSettingsModal = ({
         </div>
 
         <div className="p-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value)}>
             <TabsList className="grid grid-cols-2 w-full">
               <TabsTrigger value="account">Профиль</TabsTrigger>
               <TabsTrigger value="company">Организация</TabsTrigger>
@@ -265,19 +269,45 @@ export const AccountSettingsModal = ({
                       )}
                     />
 
-                    <FormField
-                      control={profileForm.control}
-                      name="displayName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Отображаемое имя</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="Иван Иванов" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <FormField
+                       control={profileForm.control}
+                       name="displayName"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Отображаемое имя</FormLabel>
+                           <FormControl>
+                             <Input {...field} placeholder="Иван Иванов" />
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
+
+                     <FormField
+                       control={profileForm.control}
+                       name="currency"
+                       render={({ field }) => (
+                         <FormItem>
+                           <FormLabel>Валюта по умолчанию</FormLabel>
+                           <FormControl>
+                             <Select onValueChange={field.onChange} value={field.value}>
+                               <SelectTrigger>
+                                 <SelectValue placeholder="Выберите валюту" />
+                               </SelectTrigger>
+                               <SelectContent>
+                                 <SelectItem value="BYN">BYN</SelectItem>
+                                 <SelectItem value="USD">USD</SelectItem>
+                                 <SelectItem value="EUR">EUR</SelectItem>
+                                 <SelectItem value="RUB">RUB</SelectItem>
+                                 <SelectItem value="UAH">UAH</SelectItem>
+                                 <SelectItem value="PLN">PLN</SelectItem>
+                               </SelectContent>
+                             </Select>
+                           </FormControl>
+                           <FormMessage />
+                         </FormItem>
+                       )}
+                     />
                   </div>
                   
                   <div className="flex gap-3 pt-4">
