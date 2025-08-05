@@ -163,22 +163,45 @@ export const AccountSettingsModal = ({
   const handleProfileSave = async (data: any) => {
     setIsSavingProfile(true);
     try {
-      const { error } = await supabase
+      // Check if profile already exists
+      const { data: existingProfile } = await supabase
         .from('profiles')
-        .upsert({
-          user_id: user.id,
-          display_name: data.displayName,
-          phone: data.phone,
-          currency: data.currency,
-        });
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (error) {
+      let result;
+      if (existingProfile) {
+        // Update existing profile
+        result = await supabase
+          .from('profiles')
+          .update({
+            display_name: data.displayName,
+            phone: data.phone,
+            currency: data.currency,
+          })
+          .eq('user_id', user.id);
+      } else {
+        // Insert new profile
+        result = await supabase
+          .from('profiles')
+          .insert({
+            user_id: user.id,
+            display_name: data.displayName,
+            phone: data.phone,
+            currency: data.currency,
+          });
+      }
+
+      if (result.error) {
+        console.error('Profile save error:', result.error);
         toast({ title: 'Ошибка', description: 'Не удалось сохранить профиль' });
         return;
       }
 
       toast({ title: 'Успех', description: 'Профиль успешно сохранен' });
     } catch (error) {
+      console.error('Profile save exception:', error);
       toast({ title: 'Ошибка', description: 'Произошла ошибка при сохранении профиля' });
     } finally {
       setIsSavingProfile(false);
@@ -253,6 +276,7 @@ export const AccountSettingsModal = ({
 
       toast({ title: 'Успех', description: 'Настройки организации успешно сохранены' });
     } catch (error) {
+      console.error('Company save exception:', error);
       toast({ title: 'Ошибка', description: 'Произошла ошибка при сохранении настроек организации' });
     } finally {
       setIsSavingCompany(false);
