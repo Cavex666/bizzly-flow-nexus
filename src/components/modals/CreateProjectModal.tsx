@@ -44,6 +44,7 @@ type ProjectFormData = z.infer<typeof projectSchema>;
 
 interface CreateProjectModalProps {
   onClose: () => void;
+  project?: any;
 }
 
 interface Client {
@@ -53,7 +54,7 @@ interface Client {
   email: string;
 }
 
-export const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
+export const CreateProjectModal = ({ onClose, project }: CreateProjectModalProps) => {
   const [clients, setClients] = useState<Client[]>([]);
   const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [clientSearch, setClientSearch] = useState('');
@@ -63,20 +64,20 @@ export const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      shortName: '',
-      basis: '',
-      currency: 'BYN',
-      vatEnabled: false,
-      vatRate: 20,
-      pricingType: 'total',
-      workDaysType: 'calendar',
-      workDays: 30,
-      cost: 0,
-      prepayment: 0,
-      startDate: addDays(new Date(), 7),
-      contractDate: addBusinessDays(new Date(), 3),
-      clientId: '',
-      comments: '',
+      shortName: project?.name || project?.short_project_name || '',
+      basis: project?.description || '',
+      currency: project?.currency || 'BYN',
+      vatEnabled: project?.vat_enabled || false,
+      vatRate: project?.vat_rate || 20,
+      pricingType: project?.payment_model === 'unit' ? 'unit' : 'total',
+      workDaysType: project?.work_days_type || 'calendar',
+      workDays: project?.work_duration_days || 30,
+      cost: project?.budget || 0,
+      prepayment: project?.prepayment_amount || 0,
+      startDate: project?.start_date ? new Date(project.start_date) : addDays(new Date(), 7),
+      contractDate: project?.start_date ? new Date(project.start_date) : addBusinessDays(new Date(), 3),
+      clientId: project?.client_id || '',
+      comments: project?.description || '',
     },
   });
 
@@ -148,33 +149,71 @@ export const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
       const endDate = calculateEndDate();
       const selectedClientData = clients.find(c => c.id === data.clientId);
 
-      const { error } = await supabase.from('projects').insert({
-        name: data.shortName,
-        short_project_name: data.shortName,
-        client_id: data.clientId,
-        client_name: selectedClientData?.company_name,
-        client_contact_person: selectedClientData?.contact_person,
-        start_date: data.startDate.toISOString().split('T')[0],
-        end_date: endDate?.toISOString().split('T')[0],
-        work_duration_days: data.workDays,
-        work_days_type: data.workDaysType,
-        budget: data.cost,
-        currency: data.currency,
-        vat_enabled: data.vatEnabled,
-        vat_rate: data.vatEnabled ? data.vatRate : null,
-        prepayment_amount: data.prepayment,
-        payment_model: data.pricingType === 'total' ? 'fixed' : 'unit',
-        description: data.comments,
-        user_id: user.id,
-        status: 'new'
-      });
+      let error;
+
+      if (project) {
+        // Update existing project
+        const updateResult = await supabase
+          .from('projects')
+          .update({
+            name: data.shortName,
+            short_project_name: data.shortName,
+            client_id: data.clientId,
+            client_name: selectedClientData?.company_name,
+            client_contact_person: selectedClientData?.contact_person,
+            start_date: data.startDate.toISOString().split('T')[0],
+            end_date: endDate?.toISOString().split('T')[0],
+            work_duration_days: data.workDays,
+            work_days_type: data.workDaysType,
+            budget: data.cost,
+            currency: data.currency,
+            vat_enabled: data.vatEnabled,
+            vat_rate: data.vatEnabled ? data.vatRate : null,
+            prepayment_amount: data.prepayment,
+            payment_model: data.pricingType === 'total' ? 'fixed' : 'unit',
+            description: data.comments,
+          })
+          .eq('id', project.id);
+        
+        error = updateResult.error;
+      } else {
+        // Create new project
+        const insertResult = await supabase.from('projects').insert({
+          name: data.shortName,
+          short_project_name: data.shortName,
+          client_id: data.clientId,
+          client_name: selectedClientData?.company_name,
+          client_contact_person: selectedClientData?.contact_person,
+          start_date: data.startDate.toISOString().split('T')[0],
+          end_date: endDate?.toISOString().split('T')[0],
+          work_duration_days: data.workDays,
+          work_days_type: data.workDaysType,
+          budget: data.cost,
+          currency: data.currency,
+          vat_enabled: data.vatEnabled,
+          vat_rate: data.vatEnabled ? data.vatRate : null,
+          prepayment_amount: data.prepayment,
+          payment_model: data.pricingType === 'total' ? 'fixed' : 'unit',
+          description: data.comments,
+          user_id: user.id,
+          status: 'new'
+        });
+        
+        error = insertResult.error;
+      }
 
       if (error) {
-        toast({ title: 'Ошибка', description: 'Не удалось создать проект' });
+        toast({ 
+          title: 'Ошибка', 
+          description: project ? 'Не удалось обновить проект' : 'Не удалось создать проект' 
+        });
         return;
       }
 
-      toast({ title: 'Успех', description: 'Проект успешно создан' });
+      toast({ 
+        title: 'Успех', 
+        description: project ? 'Проект успешно обновлен' : 'Проект успешно создан' 
+      });
       onClose();
     } catch (error) {
       toast({ title: 'Ошибка', description: 'Произошла ошибка при создании проекта' });
@@ -189,7 +228,7 @@ export const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
     <div className="modal-overlay fade-in" onClick={handleOverlayClick}>
       <div className="modal-content slide-up max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-border">
-          <h2 className="text-2xl font-bold">Создать проект</h2>
+          <h2 className="text-2xl font-bold">{project ? 'Редактировать проект' : 'Создать проект'}</h2>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-primary/10">
             <X className="w-5 h-5" />
           </button>
@@ -589,7 +628,10 @@ export const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
                 Отмена
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Создание...' : 'Создать проект'}
+                {isSubmitting 
+                  ? (project ? 'Сохранение...' : 'Создание...')
+                  : (project ? 'Сохранить изменения' : 'Создать проект')
+                }
               </Button>
             </div>
           </form>

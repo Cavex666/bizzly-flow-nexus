@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Eye, Calendar, DollarSign, User, MoreVertical, FolderOpen, Search } from 'lucide-react';
+import { Eye, Calendar, DollarSign, User, MoreVertical, FolderOpen, Search, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useProjects } from '@/hooks/useProjects';
 import { useClients } from '@/hooks/useClients';
 
@@ -10,6 +11,8 @@ interface ProjectsListProps {
   onProjectSelect: (projectId: string | null) => void;
   selectedProject: string | null;
   onProjectView?: (project: any) => void;
+  onProjectEdit?: (project: any) => void;
+  onProjectDelete?: (project: any) => void;
   searchQuery?: string;
   filter?: ProjectFilter;
   selectedClientId?: string | null;
@@ -21,6 +24,8 @@ export const ProjectsList = ({
   onProjectSelect, 
   selectedProject, 
   onProjectView,
+  onProjectEdit,
+  onProjectDelete,
   searchQuery = '',
   filter: externalFilter,
   selectedClientId
@@ -163,19 +168,50 @@ export const ProjectsList = ({
                         <span className="truncate">{clientName}</span>
                       </p>
                     </div>
-                    {onProjectView && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onProjectView(project);
-                        }}
-                      >
-                        <Eye className="w-3 h-3" />
-                      </Button>
-                    )}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <MoreVertical className="w-3 h-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32">
+                        {onProjectView && (
+                          <DropdownMenuItem onClick={(e) => {
+                            e.stopPropagation();
+                            onProjectView(project);
+                          }}>
+                            <Eye className="w-4 h-4 mr-2" />
+                            Просмотр
+                          </DropdownMenuItem>
+                        )}
+                        {onProjectEdit && (
+                          <DropdownMenuItem onClick={(e) => {
+                            e.stopPropagation();
+                            onProjectEdit(project);
+                          }}>
+                            <Edit className="w-4 h-4 mr-2" />
+                            Редактировать
+                          </DropdownMenuItem>
+                        )}
+                        {onProjectDelete && (
+                          <DropdownMenuItem 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onProjectDelete(project);
+                            }}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Удалить
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
 
                   {/* Project Details */}

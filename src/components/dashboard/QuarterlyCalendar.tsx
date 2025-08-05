@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useProjects } from '@/hooks/useProjects';
@@ -10,8 +10,10 @@ interface QuarterlyCalendarProps {
 }
 
 export const QuarterlyCalendar = ({ selectedProject, selectedClient }: QuarterlyCalendarProps) => {
-  const [currentQuarter, setCurrentQuarter] = useState(1);
-  const [currentYear, setCurrentYear] = useState(2024);
+  const now = new Date();
+  const currentQuarterNumber = Math.ceil((now.getMonth() + 1) / 3);
+  const [currentQuarter, setCurrentQuarter] = useState(currentQuarterNumber);
+  const [currentYear, setCurrentYear] = useState(now.getFullYear());
   const { projects } = useProjects();
   const { clients } = useClients();
 

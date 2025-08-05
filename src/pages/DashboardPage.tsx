@@ -10,17 +10,49 @@ import { CreateProjectModal } from '../components/modals/CreateProjectModal';
 import { CreateClientModal } from '../components/modals/CreateClientModal';
 import { CalendarEditorModal } from '../components/modals/CalendarEditorModal';
 import { ProjectViewModal } from '../components/modals/ProjectViewModal';
+import { useProjects } from '../hooks/useProjects';
+import { toast } from '@/hooks/use-toast';
 
 export const DashboardPage = () => {
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [showCreateClient, setShowCreateClient] = useState(false);
   const [showCalendarEditor, setShowCalendarEditor] = useState(false);
   const [showProjectView, setShowProjectView] = useState(false);
+  const [editingProject, setEditingProject] = useState<any>(null);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [viewingProject, setViewingProject] = useState<any>(null);
   const [clientSearchQuery, setClientSearchQuery] = useState('');
   const [projectSearchQuery, setProjectSearchQuery] = useState('');
+  
+  const { deleteProject } = useProjects();
+
+  const handleProjectEdit = (project: any) => {
+    setEditingProject(project);
+    setShowCreateProject(true);
+  };
+
+  const handleProjectDelete = async (project: any) => {
+    if (window.confirm(`Вы уверены, что хотите удалить проект "${project.name}"?`)) {
+      try {
+        await deleteProject(project.id);
+        toast({
+          title: 'Успех',
+          description: 'Проект успешно удален'
+        });
+      } catch (error) {
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось удалить проект'
+        });
+      }
+    }
+  };
+
+  const handleCloseCreateProject = () => {
+    setShowCreateProject(false);
+    setEditingProject(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -151,6 +183,8 @@ export const DashboardPage = () => {
                   setViewingProject(project);
                   setShowProjectView(true);
                 }}
+                onProjectEdit={handleProjectEdit}
+                onProjectDelete={handleProjectDelete}
                 searchQuery={projectSearchQuery}
               />
             </div>
@@ -160,7 +194,10 @@ export const DashboardPage = () => {
 
       {/* Modals */}
       {showCreateProject && (
-        <CreateProjectModal onClose={() => setShowCreateProject(false)} />
+        <CreateProjectModal 
+          onClose={handleCloseCreateProject} 
+          project={editingProject}
+        />
       )}
       
       {showCreateClient && (

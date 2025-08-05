@@ -73,5 +73,22 @@ export const useProjects = () => {
     };
   }, []);
 
-  return { projects, loading, refetch: loadProjects };
+  const deleteProject = async (projectId: string) => {
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', projectId);
+
+      if (error) {
+        throw error;
+      }
+
+      await loadProjects();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  return { projects, loading, refetch: loadProjects, deleteProject };
 };
