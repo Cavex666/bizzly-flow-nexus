@@ -2,41 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Bizzly Material Expressive Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
+    /* Material Expressive Color Palette */
+    --background: 248 250 252;
+    --foreground: 226 232 240;
+    
+    --card: 255 255 255;
+    --card-foreground: 71 85 105;
+    
+    --popover: 255 255 255;
+    --popover-foreground: 71 85 105;
+    
+    --primary: 268 84% 64%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 268 84% 75%;
+    --primary-dark: 268 84% 45%;
+    
+    --secondary: 199 89% 48%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 199 89% 65%;
+    --secondary-dark: 199 89% 35%;
+    
+    --accent: 45 93% 58%;
+    --accent-foreground: 0 0% 15%;
+    --accent-light: 45 93% 75%;
+    --accent-dark: 45 93% 45%;
+    
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 268 84% 64%;
+    
+    --success: 120 100% 40%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 15%;
+    
+    --info: 221 83% 53%;
+    --info-foreground: 0 0% 100%;
+    
+    /* Material Expressive Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-light)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
+    --gradient-surface: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted)));
+    
+    /* Material Expressive Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(var(--primary) / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(var(--primary) / 0.1), 0 4px 6px -2px hsl(var(--primary) / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(var(--primary) / 0.1), 0 10px 10px -5px hsl(var(--primary) / 0.04);
+    --shadow-2xl: 0 25px 50px -12px hsl(var(--primary) / 0.25);
+    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.3);
+    --shadow-colored: 0 8px 16px hsl(var(--primary) / 0.15);
+    
+    /* Material Expressive Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +136,106 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-to-br from-background to-muted text-foreground font-sans;
+  }
+}
+
+@layer components {
+  /* Material Expressive Components */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl;
+  }
+  
+  .floating-card {
+    @apply bg-white shadow-2xl hover:shadow-glow transition-all duration-300 hover:-translate-y-1;
+  }
+  
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+  
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+  
+  .material-button {
+    @apply relative overflow-hidden bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-2xl
+           shadow-colored hover:shadow-glow transition-all duration-300 hover:scale-105 active:scale-95;
+  }
+  
+  .material-button::before {
+    content: '';
+    @apply absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full transition-transform duration-700;
+  }
+  
+  .material-button:hover::before {
+    @apply translate-x-full;
+  }
+  
+  .material-input {
+    @apply bg-white/90 border-2 border-input focus:border-primary rounded-xl px-4 py-3
+           transition-all duration-300 focus:shadow-glow focus:scale-[1.02];
+  }
+  
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sidebar-foreground
+           hover:bg-primary/10 hover:text-primary transition-all duration-300
+           hover:shadow-md hover:translate-x-1;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-primary text-primary-foreground shadow-colored;
+  }
+  
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+  }
+  
+  .modal-content {
+    @apply bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-auto
+           transform transition-all duration-500;
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .slide-up {
+    animation: slideUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+  
+  .scale-in {
+    animation: scaleIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
   }
 }
